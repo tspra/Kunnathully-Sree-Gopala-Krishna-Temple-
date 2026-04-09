@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { AboutPageContent, CreateDonationPlanRequest, DonateInfo, HomeNotice, UpdateAboutPageRequest, UpdateDonateInfoRequest, UpdateHomeNoticeRequest, UpdateVisitInfoRequest, ChangePasswordRequest, CreateEventRequest, CreateGalleryImageRequest, DonationPlan, GalleryImage, LoginRequest, LoginResponse, PoojaBookingRequest, PoojaBookingResponse, RegisterAccountRequest, RegisterAccountResponse, ScheduleItem, TempleContent, TempleEvent, UpcomingPoojaBooking, VisitInfo } from './temple-content.model';
 import { environment } from '../environments/environment';
 
@@ -17,7 +18,79 @@ export class TempleContentService {
   }
 
   getContent(): Observable<TempleContent> {
-    return this.http.get<TempleContent>(this.apiUrl('/api/temple-content'));
+    const about$ = this.getAboutContent().pipe(
+      catchError(() =>
+        of({
+          templeName: 'കുന്നത്തുള്ളി ശ്രീ ഗോപാലകൃഷ്ണ ക്ഷേത്രം',
+          title: 'A sacred space serving devotion, culture, and community.',
+          description: 'Our temple preserves timeless traditions while welcoming every family with dignity, transparency, and care.'
+        } as AboutPageContent))
+    );
+
+    const notice$ = this.getHomeNotice().pipe(
+      catchError(() =>
+        of({
+          label: 'ക്ഷേത്ര അറിയിപ്പ്',
+          title: 'ഇന്നത്തെ പ്രധാന വിവരം',
+          description: 'രാവിലെ 06:00 മുതൽ 09:00 വരെ ദർശനം ലഭ്യമാണ്. വൈകുന്നേരം 05:00 മുതൽ 08:00 വരെ വീണ്ടും ദർശനം ഉണ്ടായിരിക്കും.',
+          darshanHeading: 'തിങ്കൾ മുതൽ ഞായർ വരെ',
+          morningDarshanTime: '05:00 AM - 12:00 PM',
+          eveningDarshanTime: '05:00 PM - 08:00 PM'
+        } as HomeNotice))
+    );
+
+    const schedule$ = this.getSchedule().pipe(catchError(() => of([] as ScheduleItem[])));
+    const events$ = this.getEvents().pipe(catchError(() => of([] as TempleEvent[])));
+    const donationPlans$ = this.getDonationPlans().pipe(catchError(() => of([] as DonationPlan[])));
+    const gallery$ = this.getGalleryImages().pipe(catchError(() => of([] as GalleryImage[])));
+    const visit$ = this.getVisitInfo().pipe(
+      catchError(() =>
+        of({
+          address: '',
+          phone: '',
+          email: '',
+          visitingHours: ''
+        } as VisitInfo))
+    );
+
+    return forkJoin({
+      about: about$,
+      notice: notice$,
+      schedule: schedule$,
+      events: events$,
+      donationPlans: donationPlans$,
+      gallery: gallery$,
+      visit: visit$
+    }).pipe(
+      map(({ about, notice, schedule, events, donationPlans, gallery, visit }) => ({
+        hero: {
+          eyebrow: notice.label,
+          title: about.templeName,
+          subtitle: about.description,
+          primaryAction: 'Plan Your Visit',
+          secondaryAction: 'Support A Seva'
+        },
+        stats: [
+          { label: notice.darshanHeading, value: `${notice.morningDarshanTime} | ${notice.eveningDarshanTime}` },
+          { label: 'Seva Offerings', value: `${schedule.length}` },
+          { label: 'Upcoming Events', value: `${events.length}` }
+        ],
+        schedule,
+        offerings: [
+          { title: 'Archana and Sankalpam', description: 'Personalized pooja requests with booking guidance for families and sponsors.', accent: 'saffron' },
+          { title: 'Festivals and Utsavams', description: 'Annual celebrations, procession details, and volunteer coordination.', accent: 'marigold' },
+          { title: 'Spiritual Education', description: 'Scripture classes, youth programs, and cultural learning.', accent: 'leaf' },
+          { title: 'Annadanam and Community Care', description: 'Food service initiatives, charitable outreach, and donation campaigns.', accent: 'stone' }
+        ],
+        events,
+        gallery: gallery.slice(0, 3).map((item) => ({
+          title: item.title,
+          description: item.description
+        })),
+        donationPlans,
+        contact: visit
+      }))
+    );
   }
 
   getAboutContent(): Observable<AboutPageContent> {
