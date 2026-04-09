@@ -13,13 +13,27 @@ var allowedOrigins = builder.Configuration["Cors:AllowedOrigins"]?
     .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
     ?? [];
 
+var defaultOrigins = new[]
+{
+    "http://localhost:4200",
+    "https://kunnathully-sree-gopalakrishna-temple.netlify.app"
+};
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("TempleFrontend", policy =>
     {
         var origins = allowedOrigins.Length > 0
             ? allowedOrigins
-            : ["http://localhost:4200"];
+            : defaultOrigins;
+
+        if (origins.Any(origin => origin == "*"))
+        {
+            policy.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            return;
+        }
 
         policy.WithOrigins(origins)
             .AllowAnyHeader()
