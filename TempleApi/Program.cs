@@ -9,18 +9,37 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+var allowedOrigins = builder.Configuration["Cors:AllowedOrigins"]?
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? [];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("TempleFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        var origins = allowedOrigins.Length > 0
+            ? allowedOrigins
+            : ["http://localhost:4200"];
+
+        policy.WithOrigins(origins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 builder.Services.AddDbContext<TempleContentDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("TempleContent")
-        ?? "Data Source=temple-content.db"));
+{
+    var connectionString = builder.Configuration.GetConnectionString("TempleContent")
+        ?? "Data Source=temple-content.db";
+
+    if (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase)
+        || connectionString.Contains("Username=", StringComparison.OrdinalIgnoreCase))
+    {
+        options.UseNpgsql(connectionString);
+        return;
+    }
+
+    options.UseSqlite(connectionString);
+});
 
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "TempleApi";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "TempleWeb";

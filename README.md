@@ -58,3 +58,65 @@ npm run build
 - Replace placeholder contact information, dates, and donation tiers with real temple data.
 - The API content is currently hard-coded in the controller and can be moved to a database or admin CMS later.
 - The gallery section uses styled placeholders instead of image assets so the template stays lightweight.
+
+## Free Hosting Deployment
+
+This project is now prepared for low-traffic free hosting with:
+
+- Angular frontend on Cloudflare Pages
+- ASP.NET Core API on Render Web Service
+- Free Postgres on Neon (or Supabase)
+
+### 1. Deploy the API (Render)
+
+Create a new Render Web Service from this repository and configure:
+
+- Root directory: `TempleApi`
+- Build command: `dotnet build -c Release`
+- Start command: `dotnet TempleApi.dll`
+
+Set Render environment variables:
+
+- `ASPNETCORE_ENVIRONMENT=Production`
+- `ConnectionStrings__TempleContent=<your neon postgres connection string>`
+- `Jwt__Issuer=TempleApi`
+- `Jwt__Audience=TempleWeb`
+- `Jwt__Key=<strong random secret>`
+- `Cors__AllowedOrigins=https://<your-cloudflare-site>.pages.dev`
+
+Notes:
+
+- The API auto-detects provider by connection string.
+- Postgres strings (Host/Username) use Npgsql.
+- Local `Data Source=...` strings continue using SQLite.
+
+### 2. Deploy the frontend (Cloudflare Pages)
+
+Create a Cloudflare Pages project from this repository and configure:
+
+- Project directory: `temple-web`
+- Build command: `npm run build`
+- Build output directory: `dist/temple-web`
+
+Before deployment, set the production API URL in:
+
+- `temple-web/src/environments/environment.prod.ts`
+
+Replace:
+
+- `https://your-api-service.onrender.com`
+
+with your real Render API URL.
+
+### 3. Verify end-to-end
+
+- Open your Cloudflare Pages URL.
+- Confirm home/content APIs load.
+- Test register/login and pooja booking.
+- Confirm CORS allows only your frontend domain.
+
+### 4. Free-tier behavior to expect
+
+- Render free service may sleep after inactivity.
+- First request after idle can take time to wake up.
+- Free databases have storage and connection limits.
