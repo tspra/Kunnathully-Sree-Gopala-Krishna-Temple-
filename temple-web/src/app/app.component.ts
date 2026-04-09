@@ -1,3 +1,4 @@
+// Deployed with fixed CORS and API endpoint mapping
 import { Component, HostListener, OnInit } from '@angular/core';
 import { TempleContent, VisitInfo } from './temple-content.model';
 import { TempleContentService } from './temple-content.service';
