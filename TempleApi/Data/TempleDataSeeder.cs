@@ -8,213 +8,6 @@ public static class TempleDataSeeder
 {
     public static void Seed(TempleContentDbContext context)
     {
-        context.Database.ExecuteSqlRaw(
-            """
-            CREATE TABLE IF NOT EXISTS "GalleryImages" (
-                "Id" INTEGER NOT NULL CONSTRAINT "PK_GalleryImages" PRIMARY KEY AUTOINCREMENT,
-                "Title" TEXT NOT NULL,
-                "ImageUrl" TEXT NOT NULL,
-                "Description" TEXT NOT NULL
-            );
-            """);
-
-        context.Database.ExecuteSqlRaw(
-            """
-            CREATE TABLE IF NOT EXISTS "DonationPlans" (
-                "Id" INTEGER NOT NULL CONSTRAINT "PK_DonationPlans" PRIMARY KEY AUTOINCREMENT,
-                "Title" TEXT NOT NULL,
-                "Description" TEXT NOT NULL,
-                "Contribution" TEXT NOT NULL,
-                "ImageUrl" TEXT NOT NULL DEFAULT 'assets/images/donate.png'
-            );
-            """);
-
-        context.Database.ExecuteSqlRaw(
-            """
-            CREATE TABLE IF NOT EXISTS "UserAccounts" (
-                "Id" INTEGER NOT NULL CONSTRAINT "PK_UserAccounts" PRIMARY KEY AUTOINCREMENT,
-                "Name" TEXT NOT NULL,
-                "Address" TEXT NOT NULL,
-                "Email" TEXT NOT NULL DEFAULT '',
-                "MobileNumber" TEXT NOT NULL,
-                "PasswordHash" TEXT NOT NULL,
-                "PasswordSalt" TEXT NOT NULL,
-                "Role" TEXT NOT NULL DEFAULT 'Admin',
-                "CreatedAtUtc" TEXT NOT NULL
-            );
-            """);
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"UserAccounts\" ADD COLUMN \"Email\" TEXT NOT NULL DEFAULT '';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"UserAccounts\" ADD COLUMN \"Role\" TEXT NOT NULL DEFAULT 'Admin';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"HomeNoticeLabel\" TEXT NOT NULL DEFAULT 'ക്ഷേത്ര അറിയിപ്പ്';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"HomeNoticeTitle\" TEXT NOT NULL DEFAULT 'ഇന്നത്തെ പ്രധാന വിവരം';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"HomeNoticeDescription\" TEXT NOT NULL DEFAULT 'രാവിലെ 06:00 മുതൽ 09:00 വരെ ദർശനം ലഭ്യമാണ്. വൈകുന്നേരം 05:00 മുതൽ 08:00 വരെ വീണ്ടും ദർശനം ഉണ്ടായിരിക്കും.';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"HomeNoticeLinkText\" TEXT NOT NULL DEFAULT 'പൂർണ്ണ സമയക്രമം കാണുക';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"DarshanHeading\" TEXT NOT NULL DEFAULT 'തിങ്കൾ മുതൽ ഞായർ വരെ';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"MorningDarshanTime\" TEXT NOT NULL DEFAULT '05:00 AM - 12:00 PM';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"EveningDarshanTime\" TEXT NOT NULL DEFAULT '05:00 PM - 08:00 PM';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"BankAccountName\" TEXT NOT NULL DEFAULT 'Kunnathulli Sree Gopalakrishna Kshethram';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"BankAccountNumber\" TEXT NOT NULL DEFAULT '0000000000000000';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"BankIfscCode\" TEXT NOT NULL DEFAULT 'XXXX0000000';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"TempleInfos\" ADD COLUMN \"DonateUpiImageUrl\" TEXT NOT NULL DEFAULT 'assets/images/upi.png';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"DonationPlans\" ADD COLUMN \"ImageUrl\" TEXT NOT NULL DEFAULT 'assets/images/donate.png';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"ScheduleItems\" ADD COLUMN \"Price\" TEXT NOT NULL DEFAULT '₹ 0.00';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"ScheduleItems\" ADD COLUMN \"Category\" TEXT NOT NULL DEFAULT 'എല്ലാം';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
-
-        context.Database.ExecuteSqlRaw(
-            """
-            CREATE UNIQUE INDEX IF NOT EXISTS "IX_UserAccounts_MobileNumber" ON "UserAccounts" ("MobileNumber");
-            """);
-
-        context.Database.ExecuteSqlRaw(
-            """
-            CREATE TABLE IF NOT EXISTS "PoojaBookings" (
-                "Id" INTEGER NOT NULL CONSTRAINT "PK_PoojaBookings" PRIMARY KEY AUTOINCREMENT,
-                "UserAccountId" INTEGER NOT NULL,
-                "Name" TEXT NOT NULL,
-                "MobileNumber" TEXT NOT NULL,
-                "Date" TEXT NOT NULL,
-                "Nalu" TEXT NOT NULL,
-                "PoojaType" TEXT NOT NULL DEFAULT '',
-                "CreatedAtUtc" TEXT NOT NULL
-            );
-            """);
-
-        try
-        {
-            context.Database.ExecuteSqlRaw("ALTER TABLE \"PoojaBookings\" ADD COLUMN \"PoojaType\" TEXT NOT NULL DEFAULT '';");
-        }
-        catch
-        {
-            // Column already exists.
-        }
 
         if (!context.TempleInfos.Any())
         {
@@ -346,13 +139,21 @@ public static class TempleDataSeeder
         var adminHash = Rfc2898DeriveBytes.Pbkdf2("Admin@1234", adminSalt, 100_000, HashAlgorithmName.SHA256, 32);
         var adminSaltB64 = Convert.ToBase64String(adminSalt);
         var adminHashB64 = Convert.ToBase64String(adminHash);
-        var now = DateTime.UtcNow.ToString("o");
 
-        context.Database.ExecuteSqlRaw(
-            $"""
-            INSERT OR IGNORE INTO "UserAccounts" ("Name","Address","Email","MobileNumber","PasswordHash","PasswordSalt","Role","CreatedAtUtc")
-            VALUES ('Temple Admin','Temple Office','admin@temple.org','9999999999','{adminHashB64}','{adminSaltB64}','Admin','{now}');
-            """);
+        if (!context.UserAccounts.Any(u => u.MobileNumber == "9999999999"))
+        {
+            context.UserAccounts.Add(new UserAccountEntity
+            {
+                Name = "Temple Admin",
+                Address = "Temple Office",
+                Email = "admin@temple.org",
+                MobileNumber = "9999999999",
+                PasswordHash = adminHashB64,
+                PasswordSalt = adminSaltB64,
+                Role = "Admin",
+                CreatedAtUtc = DateTime.UtcNow
+            });
+        }
 
         context.SaveChanges();
     }

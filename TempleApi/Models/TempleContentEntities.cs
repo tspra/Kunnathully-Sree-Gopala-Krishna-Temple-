@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace TempleApi.Models;
 
 public class TempleInfoEntity
@@ -74,6 +76,7 @@ public class DonationPlanEntity
     public string ImageUrl { get; set; } = string.Empty;
 }
 
+[Index(nameof(MobileNumber), IsUnique = true)]
 public class UserAccountEntity
 {
     public int Id { get; set; }
