@@ -1,0 +1,84 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Register account" />
+  <div class="inner-banner-overlay">
+    <h1>രജിസ്ട്രേഷൻ</h1>
+  </div>
+</section>
+
+<section class="register-shell">
+  <article class="register-panel">
+    <p class="section-tag">New Account</p>
+    <h2>വെബ്സൈറ്റിൽ പുതിയ അക്കൗണ്ട് സൃഷ്ടിക്കുക</h2>
+    <p class="register-copy">
+      പേര്, വിലാസം, ഇമെയിൽ, മൊബൈൽ നമ്പർ, പാസ്‌വേഡ് എന്നിവ നൽകി അക്കൗണ്ട് രജിസ്റ്റർ ചെയ്യാം.
+    </p>
+
+    <form class="register-form" #registerForm="ngForm" (ngSubmit)="submit()">
+      <label class="form-field">
+        <span>പേര്</span>
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="formData.name"
+          required
+          minlength="2"
+          maxlength="100"
+          placeholder="പേര് നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>വിലാസം</span>
+        <textarea
+          name="address"
+          [(ngModel)]="formData.address"
+          required
+          minlength="5"
+          maxlength="300"
+          rows="4"
+          placeholder="വിലാസം നൽകുക"></textarea>
+      </label>
+
+      <label class="form-field">
+        <span>മൊബൈൽ നമ്പർ</span>
+        <input
+          type="tel"
+          name="mobileNumber"
+          [(ngModel)]="formData.mobileNumber"
+          required
+          pattern="^[0-9+\-()\s]{10,20}$"
+          placeholder="മൊബൈൽ നമ്പർ നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>ഇമെയിൽ</span>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="formData.email"
+          required
+          email
+          maxlength="150"
+          placeholder="ഇമെയിൽ നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>പാസ്‌വേഡ്</span>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="formData.password"
+          required
+          minlength="6"
+          maxlength="100"
+          placeholder="പാസ്‌വേഡ് നൽകുക" />
+      </label>
+
+      <button class="register-button" type="submit" [disabled]="registerForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'സമർപ്പിക്കുന്നു...' : 'അക്കൗണ്ട് സൃഷ്ടിക്കുക' }}
+      </button>
+    </form>
+
+    <p class="status-message success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="status-message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </article>
+</section>

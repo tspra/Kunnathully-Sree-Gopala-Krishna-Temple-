@@ -1,0 +1,45 @@
+<div class="site-shell">
+  <header class="site-header">
+    <div class="header-top">
+      <a class="brand" routerLink="/">
+        <span class="brand-mark">ॐ</span>
+        <span>
+          <strong>{{ title }}</strong>
+        </span>
+      </a>
+      <div class="auth-links">
+        <a *ngIf="!isLoggedIn" routerLink="/login" class="auth-btn">Login</a>
+        <div *ngIf="isLoggedIn" class="user-menu" [class.open]="menuOpen">
+          <button type="button" class="user-menu-btn" (click)="toggleMenu()">
+            <span class="user-icon">👤</span>
+            <span>Admin</span>
+            <span class="caret">▾</span>
+          </button>
+          <div class="user-dropdown">
+            <a routerLink="/change-password" class="dropdown-item" (click)="menuOpen = false">Change Password</a>
+            <button type="button" class="dropdown-item dropdown-logout" (click)="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">HOME</a>
+      <a routerLink="/history" routerLinkActive="active-link">HISTORY</a>
+      <a routerLink="/pooja" routerLinkActive="active-link">POOJA</a>
+      <a routerLink="/events" routerLinkActive="active-link">FESTIVALS</a>
+      <a routerLink="/donate" routerLinkActive="active-link">DONATE</a>
+      <a routerLink="/visit" routerLinkActive="active-link">GALLERY</a>
+       <a routerLink="/contact" routerLinkActive="active-link">CONTACT</a>
+    </nav>
+  </header>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      കുന്നത്തുള്ളി ശ്രീ ഗോപാലകൃഷ്ണ ക്ഷേത്രം © {{ currentYear }}. All Rights Reserved.
+    </p>
+  </footer>
+</div>

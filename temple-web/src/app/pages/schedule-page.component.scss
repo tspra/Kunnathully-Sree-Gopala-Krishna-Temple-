@@ -1,0 +1,150 @@
+:host {
+  display: block;
+}
+
+.schedule-shell {
+  align-items: start;
+}
+
+.schedule-content-shell {
+  display: grid;
+  gap: 18px;
+}
+
+.pooja-admin-tools {
+  margin: 18px 0 22px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(122, 86, 46, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.pooja-admin-add-row,
+.pooja-admin-save-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.pooja-admin-save-row {
+  margin-top: 10px;
+}
+
+.pooja-admin-input,
+.pooja-admin-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(122, 86, 46, 0.24);
+  color: var(--text-strong);
+  background: #fff;
+}
+
+.pooja-admin-input {
+  max-width: 100%;
+}
+
+.pooja-admin-form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.pooja-admin-field {
+  display: grid;
+  gap: 8px;
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.add-pooja-panel h2 {
+  margin: 8px 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--text-strong);
+}
+
+.admin-action-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+  color: #fffaf2;
+  background: linear-gradient(135deg, #9b4f26, #cf8339);
+  cursor: pointer;
+}
+
+.admin-action-button.save {
+  background: linear-gradient(135deg, #3f6d2c, #579343);
+}
+
+.admin-action-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.upcoming-panel h2 {
+  margin: 8px 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--text-strong);
+}
+
+.upcoming-copy {
+  color: var(--text-soft);
+  line-height: 1.75;
+  margin-bottom: 22px;
+}
+
+.status-message {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.status-message.error {
+  background: rgba(252, 224, 224, 0.92);
+  color: #9f2a2a;
+}
+
+.upcoming-list {
+  display: grid;
+  gap: 12px;
+}
+
+.upcoming-item {
+  display: grid;
+  grid-template-columns: 1.4fr auto auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid rgba(122, 86, 46, 0.18);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 14px;
+}
+
+.upcoming-meta h3 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1rem;
+}
+
+.upcoming-meta p {
+  margin: 4px 0 0;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.upcoming-date,
+.upcoming-nalu {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+@media (max-width: 840px) {
+  .upcoming-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}

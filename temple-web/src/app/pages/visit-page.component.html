@@ -1,0 +1,96 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Temple Visit Information" />
+  <div class="inner-banner-overlay">
+    <h1>ക്ഷേത്ര ചിത്രങ്ങൾ</h1>
+  </div>
+</section>
+
+<section class="content-shell">
+  <article class="content-panel">
+    <p class="section-tag">Gallery</p>
+    <div class="admin-tabs" *ngIf="isAdmin">
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="isTabSelected(tab)"
+        *ngFor="let tab of adminTabs"
+        (click)="selectTab(tab)">
+        {{ getTabLabel(tab) }}
+      </button>
+    </div>
+
+    <section *ngIf="!isAdmin || isTabSelected(currentPicturesTab)">
+      <h2>ക്ഷേത്ര ചിത്രങ്ങൾ</h2>
+
+      <div class="content-grid-list gallery-grid-list">
+        <article class="content-item-card gallery-item-card" *ngFor="let image of galleryImages">
+          <img
+            [src]="image.imageUrl"
+            [alt]="image.title"
+            class="gallery-thumb"
+            (click)="openPreview(image)"
+            role="button"
+            tabindex="0"
+            (keydown.enter)="openPreview(image)"
+            (keydown.space)="openPreview(image)" />
+          <h3>{{ image.title }}</h3>
+          <p>{{ image.description }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="gallery-admin-form" *ngIf="isAdmin && isTabSelected(addPictureTab)">
+      <h2>പുതിയ ചിത്രം ചേർക്കുക</h2>
+
+      <form class="gallery-form" #galleryForm="ngForm" (ngSubmit)="submit()">
+        <label class="form-field">
+          <span>ചിത്രത്തിന്റെ പേര്</span>
+          <input
+            type="text"
+            name="title"
+            [(ngModel)]="formData.title"
+            required
+            minlength="2"
+            maxlength="150"
+            placeholder="ചിത്രത്തിന്റെ പേര് നൽകുക" />
+        </label>
+
+        <label class="form-field">
+          <span>ചിത്ര ഫയൽ</span>
+          <input
+            type="file"
+            name="file"
+            accept="image/*"
+            required
+            (change)="onFileSelected($event)" />
+        </label>
+
+        <label class="form-field">
+          <span>വിവരണം (ഓപ്ഷണൽ)</span>
+          <textarea
+            name="description"
+            [(ngModel)]="formData.description"
+            rows="4"
+            maxlength="500"
+            placeholder="ചിത്രത്തെ കുറിച്ച് ചെറിയ വിവരണം നൽകുക"></textarea>
+        </label>
+
+        <button class="gallery-submit" type="submit" [disabled]="galleryForm.invalid || isSubmitting">
+          {{ isSubmitting ? 'സമർപ്പിക്കുന്നു...' : 'ചിത്രം ചേർക്കുക' }}
+        </button>
+      </form>
+
+      <p class="status-message success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="status-message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </section>
+  </article>
+</section>
+
+<div class="gallery-lightbox" *ngIf="previewImage" (click)="closePreview()">
+  <div class="gallery-lightbox-content" (click)="$event.stopPropagation()">
+    <button type="button" class="gallery-lightbox-close" (click)="closePreview()" aria-label="Close image preview">×</button>
+    <img [src]="previewImage.imageUrl" [alt]="previewImage.title" class="gallery-lightbox-image" />
+    <h3>{{ previewImage.title }}</h3>
+    <p>{{ previewImage.description }}</p>
+  </div>
+</div>

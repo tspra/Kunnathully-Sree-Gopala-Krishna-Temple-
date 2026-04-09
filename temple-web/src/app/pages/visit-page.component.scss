@@ -1,0 +1,141 @@
+:host {
+  display: block;
+}
+
+.admin-tabs {
+  margin-bottom: 18px;
+}
+
+.gallery-admin-form {
+  margin-top: 4px;
+}
+
+.gallery-form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.form-field span {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(122, 86, 46, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-strong);
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.gallery-submit {
+  justify-self: start;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #9b4f26, #cf8339);
+  color: #fffaf2;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gallery-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.status-message {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.status-message.success {
+  background: rgba(217, 241, 221, 0.9);
+  color: #1e6b38;
+}
+
+.status-message.error {
+  background: rgba(252, 224, 224, 0.92);
+  color: #9f2a2a;
+}
+
+.gallery-thumb {
+  cursor: zoom-in;
+}
+
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  background: rgba(19, 13, 8, 0.78);
+  padding: 20px;
+}
+
+.gallery-lightbox-content {
+  position: relative;
+  width: min(920px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 231, 195, 0.35);
+  background: rgba(255, 250, 242, 0.98);
+  box-shadow: 0 28px 44px rgba(14, 8, 4, 0.35);
+}
+
+.gallery-lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(34, 24, 15, 0.86);
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gallery-lightbox-image {
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  background: #f5ead8;
+}
+
+.gallery-lightbox-content h3 {
+  margin: 6px 0;
+  color: var(--text-strong);
+}
+
+.gallery-lightbox-content p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+@media (max-width: 640px) {
+  .gallery-submit {
+    width: 100%;
+    justify-self: stretch;
+  }
+}

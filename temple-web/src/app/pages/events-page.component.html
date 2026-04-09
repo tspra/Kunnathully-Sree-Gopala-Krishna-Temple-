@@ -1,0 +1,88 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Temple Events" />
+  <div class="inner-banner-overlay">
+    <h1>ഉത്സവങ്ങളും പരിപാടികളും</h1>
+  </div>
+</section>
+
+<section class="content-shell">
+  <article class="content-panel">
+    <p class="section-tag">Events</p>
+
+    <div class="admin-tabs" *ngIf="isAdmin">
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="isTabSelected(tab)"
+        *ngFor="let tab of adminTabs"
+        (click)="selectTab(tab)">
+        {{ getTabLabel(tab) }}
+      </button>
+    </div>
+
+    <section *ngIf="!isAdmin || isTabSelected(currentEventsTab)">
+      <h2>വരാനിരിക്കുന്ന ക്ഷേത്ര പരിപാടികൾ</h2>
+      <div class="content-grid-list">
+        <article class="content-item-card" *ngFor="let event of events">
+          <p class="meta">{{ event.date }}</p>
+          <h3>{{ event.title }}</h3>
+          <p>{{ event.description }}</p>
+          <button
+            *ngIf="isAdmin && isPastEvent(event)"
+            type="button"
+            class="delete-event-btn"
+            [disabled]="deletingEventId === event.id"
+            (click)="deletePastEvent(event)">
+            {{ deletingEventId === event.id ? 'നീക്കം ചെയ്യുന്നു...' : 'പഴയ ഇവന്റ് നീക്കം ചെയ്യുക' }}
+          </button>
+        </article>
+      </div>
+
+      <p class="status-message success" *ngIf="isAdmin && successMessage">{{ successMessage }}</p>
+      <p class="status-message error" *ngIf="isAdmin && errorMessage">{{ errorMessage }}</p>
+    </section>
+
+    <section class="event-admin-form" *ngIf="isAdmin && isTabSelected(addEventTab)">
+      <h2>പുതിയ ഇവന്റ് ചേർക്കുക</h2>
+      <form class="event-form" #eventForm="ngForm" (ngSubmit)="submit()">
+        <label class="form-field">
+          <span>ഇവന്റിന്റെ പേര്</span>
+          <input
+            type="text"
+            name="title"
+            [(ngModel)]="formData.title"
+            required
+            minlength="2"
+            maxlength="150"
+            placeholder="ഇവന്റിന്റെ പേര് നൽകുക" />
+        </label>
+
+        <label class="form-field">
+          <span>തീയതി</span>
+          <input
+            type="date"
+            name="date"
+            [(ngModel)]="formData.date"
+            required />
+        </label>
+
+        <label class="form-field">
+          <span>വിവരണം (ഓപ്ഷണൽ)</span>
+          <textarea
+            name="description"
+            [(ngModel)]="formData.description"
+            rows="4"
+            maxlength="500"
+            placeholder="ഇവന്റിനെ കുറിച്ച് ചെറിയ വിവരണം നൽകുക"></textarea>
+        </label>
+
+        <button class="event-submit" type="submit" [disabled]="eventForm.invalid || isSubmitting">
+          {{ isSubmitting ? 'സമർപ്പിക്കുന്നു...' : 'ഇവന്റ് ചേർക്കുക' }}
+        </button>
+      </form>
+
+      <p class="status-message success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="status-message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </section>
+  </article>
+</section>

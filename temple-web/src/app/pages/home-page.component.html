@@ -1,0 +1,140 @@
+<section class="home-hero">
+  <img src="assets/images/Image1.PNG" alt="ക്ഷേത്രത്തിന്റെ മുഖവാതിലും ശ്രീകോവിലും" />
+
+  <div class="home-hero-overlay">
+    <div class="home-hero-copy">
+      <h2 class="hero-tag">{{ title }}</h2>
+      <p class="hero-subtitle">
+        ദൈനംദിന ദർശന വിവരം, വരാനിരിക്കുന്ന ക്ഷേത്ര പരിപാടികൾ, സംഭാവന അറിയിപ്പുകൾ എന്നിവ പരമ്പരാഗത ക്ഷേത്ര അറിയിപ്പ് ശൈലിയിൽ ഇവിടെ ലഭ്യമാണ്.
+      </p>
+
+      <div class="hero-actions">
+        <a class="primary-cta" routerLink="/events">പുതിയ വാർത്തകൾ</a>
+      </div>
+    </div>
+
+    <aside class="hero-marquee-card" [class.hero-marquee-card-editing]="isAdmin && homeNoticeTab === 'edit'">
+      <div class="admin-tabs hero-admin-tabs" *ngIf="isAdmin">
+        <button
+          type="button"
+          class="admin-tab"
+          [class.active-admin-tab]="homeNoticeTab === 'view'"
+          (click)="setHomeNoticeTab('view')">
+          കാണുക
+        </button>
+        <button
+          type="button"
+          class="admin-tab"
+          [class.active-admin-tab]="homeNoticeTab === 'edit'"
+          (click)="setHomeNoticeTab('edit')">
+          എഡിറ്റ് ചെയ്യുക
+        </button>
+      </div>
+
+      <ng-container *ngIf="!isAdmin || homeNoticeTab === 'view'; else editHomeNotice">
+        <p class="section-tag">{{ homeNotice.label }}</p>
+        <h3>{{ homeNotice.title }}</h3>
+        <p>{{ syncedHomeNoticeDescription }}</p>
+      </ng-container>
+
+      <ng-template #editHomeNotice>
+        <form class="hero-notice-form" (ngSubmit)="saveHomeNotice()">
+          <label class="hero-form-field">
+            <span>ലേബൽ</span>
+            <input [(ngModel)]="homeNoticeForm.label" name="label" type="text" required />
+          </label>
+          <label class="hero-form-field">
+            <span>തലക്കെട്ട്</span>
+            <input [(ngModel)]="homeNoticeForm.title" name="title" type="text" required />
+          </label>
+          <label class="hero-form-field">
+            <span>വിവരണം</span>
+            <textarea [(ngModel)]="homeNoticeForm.description" name="description" rows="5" required readonly></textarea>
+          </label>
+          <label class="hero-form-field">
+            <span>ദർശന ഉപതലക്കെട്ട്</span>
+            <input [(ngModel)]="homeNoticeForm.darshanHeading" name="darshanHeading" type="text" required />
+          </label>
+          <label class="hero-form-field">
+            <span>രാവിലെ സമയം</span>
+            <input [(ngModel)]="homeNoticeForm.morningDarshanTime" (ngModelChange)="syncHomeNoticeFormDescription()" name="morningDarshanTime" type="text" required />
+          </label>
+          <label class="hero-form-field">
+            <span>വൈകുന്നേരം സമയം</span>
+            <input [(ngModel)]="homeNoticeForm.eveningDarshanTime" (ngModelChange)="syncHomeNoticeFormDescription()" name="eveningDarshanTime" type="text" required />
+          </label>
+        
+          <div class="hero-form-actions">
+            <button type="submit" class="hero-save-btn" [disabled]="savingHomeNotice">
+              {{ savingHomeNotice ? 'സംരക്ഷിക്കുന്നു...' : 'മാറ്റം സംരക്ഷിക്കുക' }}
+            </button>
+          </div>
+          <p *ngIf="homeNoticeMessage" class="hero-form-message" [class.success]="homeNoticeMessageType === 'success'" [class.error]="homeNoticeMessageType === 'error'">
+            {{ homeNoticeMessage }}
+          </p>
+        </form>
+      </ng-template>
+    </aside>
+  </div>
+</section>
+
+<section class="darshan-strip">
+  <article class="darshan-card">
+    <div class="admin-tabs" *ngIf="isAdmin">
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="darshanTab === 'view'"
+        (click)="setDarshanTab('view')">
+        കാണുക
+      </button>
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="darshanTab === 'edit'"
+        (click)="setDarshanTab('edit')">
+        എഡിറ്റ് ചെയ്യുക
+      </button>
+    </div>
+
+    <ng-container *ngIf="!isAdmin || darshanTab === 'view'; else editDarshanTimes">
+      <p class="section-tag">ദർശന സമയം</p>
+      <h4>{{ homeNotice.darshanHeading }}</h4>
+      <p>{{ homeNotice.morningDarshanTime }}</p>
+      <p>{{ homeNotice.eveningDarshanTime }}</p>
+    </ng-container>
+
+    <ng-template #editDarshanTimes>
+      <form class="hero-notice-form" (ngSubmit)="saveDarshan()">
+        <label class="hero-form-field">
+          <span>ഉപതലക്കെട്ട്</span>
+          <input [(ngModel)]="darshanForm.darshanHeading" name="darshanHeadingOnly" type="text" required />
+        </label>
+        <label class="hero-form-field">
+          <span>രാവിലെ സമയം</span>
+          <input [(ngModel)]="darshanForm.morningDarshanTime" name="morningDarshanTimeOnly" type="text" required />
+        </label>
+        <label class="hero-form-field">
+          <span>വൈകുന്നേരം സമയം</span>
+          <input [(ngModel)]="darshanForm.eveningDarshanTime" name="eveningDarshanTimeOnly" type="text" required />
+        </label>
+
+        <div class="hero-form-actions">
+          <button type="submit" class="hero-save-btn" [disabled]="savingDarshan">
+            {{ savingDarshan ? 'സംരക്ഷിക്കുന്നു...' : 'മാറ്റം സംരക്ഷിക്കുക' }}
+          </button>
+        </div>
+        <p *ngIf="darshanMessage" class="hero-form-message" [class.success]="darshanMessageType === 'success'" [class.error]="darshanMessageType === 'error'">
+          {{ darshanMessage }}
+        </p>
+      </form>
+    </ng-template>
+  </article>
+
+  <div class="quick-actions">
+    <a class="quick-action" routerLink="/pooja">പൂജാ സമയക്രമം</a>
+    <a class="quick-action" routerLink="/visit">ക്ഷേത്രം സന്ദർശിക്കുക</a>
+    <a class="quick-action accent" routerLink="/donate">ഇപ്പോൾ സംഭാവന ചെയ്യുക</a>
+  </div>
+</section>
+

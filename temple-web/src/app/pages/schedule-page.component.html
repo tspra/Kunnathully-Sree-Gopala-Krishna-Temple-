@@ -1,0 +1,139 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Pooja and offerings" />
+  <div class="inner-banner-overlay">
+    <h1>പൂജകളും വഴിപാടുകളും</h1>
+  </div>
+</section>
+
+<section class="schedule-shell">
+  <article class="darshan-panel" *ngIf="!isAdmin">
+    <p class="section-tag">ദർശന സമയം</p>
+    <h2>തിങ്കൾ മുതൽ ഞായർ വരെ</h2>
+    <p>{{ homeNotice.morningDarshanTime }}</p>
+    <p>{{ homeNotice.eveningDarshanTime }}</p>
+  </article>
+
+  <section class="schedule-content-shell">
+    <div class="admin-tabs" *ngIf="isAdmin">
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="isTabSelected(tab)"
+        *ngFor="let tab of adminTabs"
+        (click)="selectTab(tab)">
+        {{ getTabLabel(tab) }}
+      </button>
+    </div>
+
+    <article class="offerings-panel" *ngIf="!isAdmin || isTabSelected(poojaTab)">
+      <p class="section-tag">വിഭാഗങ്ങൾ</p>
+      <div class="category-row">
+        <button
+          type="button"
+          class="category-chip"
+          [class.active-chip]="isCategorySelected(category)"
+          *ngFor="let category of categoryOptions"
+          (click)="selectCategory(category)">
+          {{ category }}
+        </button>
+      </div>
+
+      <div class="offering-grid">
+        <article class="offering-card" *ngFor="let item of filteredSchedule; let i = index">
+          <p class="meta">{{ item.category }}</p>
+          <p class="meta">{{ item.time }}</p>
+          <h3>{{ item.title }}</h3>
+          <p *ngIf="item.description">{{ item.description }}</p>
+          <p class="price">{{ item.price }}</p>
+          <a class="book-now" [routerLink]="['/bookpooja']" [queryParams]="{ poojaType: item.title }">ഇപ്പോൾ ബുക്ക് ചെയ്യുക</a>
+        </article>
+      </div>
+
+      <p class="meta" *ngIf="filteredSchedule.length === 0">തിരഞ്ഞെടുത്ത വിഭാഗത്തിൽ നിലവിൽ ഇനങ്ങൾ ഇല്ല.</p>
+    </article>
+
+    <article class="offerings-panel add-pooja-panel" *ngIf="isAdmin && isTabSelected(addPoojaTab)">
+      <p class="section-tag">Admin</p>
+      <h2>പുതിയ പൂജാ തരം ചേർക്കുക</h2>
+      <p class="upcoming-copy">പൂജയുടെ പേര്, വില നൽകി പുതിയ പൂജാ തരം ചേർക്കാം.</p>
+
+      <div class="pooja-admin-tools">
+        <div class="pooja-admin-form-grid">
+          <label class="pooja-admin-field">
+            <span>പൂജാ തരം</span>
+            <input
+              type="text"
+              class="pooja-admin-input"
+              [(ngModel)]="newPoojaTypeName"
+              [ngModelOptions]="{ standalone: true }"
+              minlength="2"
+              maxlength="150"
+              placeholder="ഉദാ: മഹാഗണപതി ഹോമം" />
+          </label>
+
+          <label class="pooja-admin-field">
+            <span>വില</span>
+            <input
+              type="text"
+              class="pooja-admin-input"
+              [(ngModel)]="newPoojaTypePrice"
+              [ngModelOptions]="{ standalone: true }"
+              maxlength="50"
+              placeholder="ഉദാ: ₹ 250.00" />
+          </label>
+
+          <label class="pooja-admin-field">
+            <span>വിഭാഗം</span>
+            <select
+              class="pooja-admin-input"
+              [(ngModel)]="newPoojaTypeCategory"
+              [ngModelOptions]="{ standalone: true }"
+              >
+              <option value="">വിഭാഗം തിരഞ്ഞെടുക്കുക</option>
+              <option *ngFor="let category of categoryOptions" [value]="category">{{ category }}</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="pooja-admin-save-row">
+          <button
+            type="button"
+            class="admin-action-button save"
+            [disabled]="isAddingPoojaType"
+            (click)="addPoojaType()">
+            {{ isAddingPoojaType ? 'ചേർക്കുന്നു...' : 'പൂജാ തരം ചേർക്കുക' }}
+          </button>
+        </div>
+
+        <p class="status-message" *ngIf="addPoojaMessage" [class.error]="addPoojaMessageType === 'error'">
+          {{ addPoojaMessage }}
+        </p>
+      </div>
+    </article>
+
+    <article class="offerings-panel upcoming-panel" *ngIf="isAdmin && isTabSelected(upcomingTab)">
+      <p class="section-tag">Admin</p>
+      <h2>Upcoming Pooja Bookings</h2>
+      <p class="upcoming-copy">അടുത്ത ദിവസങ്ങളിലെ ബുക്കിംഗുകൾ ഇവിടെ കാണാം.</p>
+
+      <p class="status-message error" *ngIf="upcomingErrorMessage">{{ upcomingErrorMessage }}</p>
+      <p class="status-message" *ngIf="isLoadingUpcoming">Loading upcoming bookings...</p>
+
+      <div class="upcoming-list" *ngIf="!isLoadingUpcoming && !upcomingErrorMessage && upcomingBookings.length > 0">
+        <article class="upcoming-item" *ngFor="let booking of upcomingBookings">
+          <div class="upcoming-meta">
+            <h3>{{ booking.name }}</h3>
+            <p>{{ booking.mobileNumber }}</p>
+            <p>{{ booking.poojaType }}</p>
+          </div>
+          <div class="upcoming-date">{{ booking.date }}</div>
+          <div class="upcoming-nalu">{{ booking.nalu }}</div>
+        </article>
+      </div>
+
+      <p class="status-message" *ngIf="!isLoadingUpcoming && !upcomingErrorMessage && upcomingBookings.length === 0">
+        വരും ദിവസങ്ങളിൽ പൂജ ബുക്കിംഗ് ഒന്നുമില്ല.
+      </p>
+    </article>
+  </section>
+</section>

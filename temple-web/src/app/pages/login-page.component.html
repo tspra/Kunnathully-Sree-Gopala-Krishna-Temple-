@@ -1,0 +1,48 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Login to account" />
+  <div class="inner-banner-overlay">
+    <h1>ലോഗിൻ</h1>
+  </div>
+</section>
+
+<section class="login-shell">
+  <article class="login-panel">
+    <p class="section-tag">Account Login</p>
+    <h2>സിസ്റ്റത്തിലേക്ക് ലോഗിൻ ചെയ്യുക</h2>
+    <p class="login-copy">
+      രജിസ്റ്റർ ചെയ്ത ഇമെയിൽ അല്ലെങ്കിൽ മൊബൈൽ നമ്പറും പാസ്‌വേഡും നൽകി ലോഗിൻ ചെയ്യാം.
+    </p>
+
+    <form class="login-form" #loginForm="ngForm" (ngSubmit)="submit()">
+      <label class="form-field">
+        <span>ഇമെയിൽ / മൊബൈൽ നമ്പർ</span>
+        <input
+          type="text"
+          name="emailOrMobile"
+          [(ngModel)]="formData.emailOrMobile"
+          required
+          maxlength="150"
+          placeholder="ഇമെയിൽ അല്ലെങ്കിൽ മൊബൈൽ നമ്പർ നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>പാസ്‌വേഡ്</span>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="formData.password"
+          required
+          minlength="6"
+          maxlength="100"
+          placeholder="പാസ്‌വേഡ് നൽകുക" />
+      </label>
+
+      <button class="login-button" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'സമർപ്പിക്കുന്നു...' : 'ലോഗിൻ ചെയ്യുക' }}
+      </button>
+    </form>
+
+    <p class="status-message success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="status-message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </article>
+</section>

@@ -1,0 +1,26 @@
+@TempleApi_HostAddress = http://localhost:5242
+
+GET {{TempleApi_HostAddress}}/api/content/about
+Accept: application/json
+
+###
+
+GET {{TempleApi_HostAddress}}/api/content/schedule
+Accept: application/json
+
+###
+
+GET {{TempleApi_HostAddress}}/api/content/events
+Accept: application/json
+
+###
+
+GET {{TempleApi_HostAddress}}/api/content/donate
+Accept: application/json
+
+###
+
+GET {{TempleApi_HostAddress}}/api/content/visit
+Accept: application/json
+
+###

@@ -1,0 +1,83 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Book pooja" />
+  <div class="inner-banner-overlay">
+    <h1>പൂജ ബുക്കിംഗ്</h1>
+  </div>
+</section>
+
+<section class="book-pooja-shell">
+  <article class="book-pooja-panel">
+    <a class="back-link" routerLink="/pooja">← പൂജ പേജിലേക്ക് മടങ്ങുക</a>
+    <p class="section-tag">Book Pooja</p>
+    <h2>പൂജ ബുക്ക് ചെയ്യുക</h2>
+    <p class="book-pooja-copy">
+      പേര്, മൊബൈൽ നമ്പർ, തീയതി, നാള്, പൂജാ തരം എന്നിവ നൽകി പൂജ ബുക്ക് ചെയ്യാം.
+    </p>
+
+    <form class="book-pooja-form" #bookPoojaForm="ngForm" (ngSubmit)="submit()">
+      <label class="form-field">
+        <span>പൂജാ തരം</span>
+        <input
+          type="text"
+          name="poojaType"
+          [(ngModel)]="formData.poojaType"
+          [readonly]="!!formData.poojaType"
+          required
+          minlength="2"
+          maxlength="150"
+          placeholder="പൂജാ തരം നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>പേര്</span>
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="formData.name"
+          required
+          minlength="2"
+          maxlength="100"
+          placeholder="പേര് നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>മൊബൈൽ നമ്പർ</span>
+        <input
+          type="tel"
+          name="mobileNumber"
+          [(ngModel)]="formData.mobileNumber"
+          required
+          pattern="^[0-9+\-()\s]{10,20}$"
+          placeholder="മൊബൈൽ നമ്പർ നൽകുക" />
+      </label>
+
+      <label class="form-field">
+        <span>തീയതി</span>
+        <input
+          type="date"
+          name="date"
+          [(ngModel)]="formData.date"
+          required />
+      </label>
+
+      <label class="form-field">
+        <span>നാള്</span>
+        <select
+          name="nalu"
+          [(ngModel)]="formData.nalu"
+          required
+          >
+          <option value="" disabled>നാള് തിരഞ്ഞെടുക്കുക</option>
+          <option *ngFor="let nalu of naluOptions" [value]="nalu">{{ nalu }}</option>
+        </select>
+      </label>
+
+      <button class="book-pooja-button" type="submit" [disabled]="bookPoojaForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'സമർപ്പിക്കുന്നു...' : 'പൂജ ബുക്ക് ചെയ്യുക' }}
+      </button>
+    </form>
+
+    <p class="status-message success" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="status-message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </article>
+</section>

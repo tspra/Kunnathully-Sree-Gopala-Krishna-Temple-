@@ -1,0 +1,190 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="Temple Donations" />
+  <div class="inner-banner-overlay">
+    <h1>സംഭാവനകൾ</h1>
+  </div>
+</section>
+
+<section class="content-shell">
+  <article class="content-panel">
+    <p class="section-tag">Donate</p>
+    <h2>ക്ഷേത്ര സേവനങ്ങൾക്ക് പിന്തുണ നൽകൂ</h2>
+
+    <div class="admin-tabs" *ngIf="isAdmin">
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="activeTab === 'view'"
+        (click)="setActiveTab('view')">
+        കാണുക
+      </button>
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="activeTab === 'items'"
+        (click)="setActiveTab('items')">
+        പുതിയ പ്ലാനുകൾ ചേർക്കൂ
+      </button>
+    </div>
+
+    <ng-container *ngIf="!isAdmin || activeTab === 'view'; else editDonateInfo">
+      <div class="donate-layout">
+        <section class="donation-items-column">
+          <article class="donation-item-card" *ngFor="let item of donationPlans">
+            <div class="donation-item-media">
+              <button
+                type="button"
+                class="donation-image-button"
+                (click)="openImageModal(item)"
+                [attr.aria-label]="item.title + ' ചിത്രം കാണുക'">
+                <img [src]="item.imageUrl || donationImageUrl" alt="Donate" onerror="this.src='assets/images/Image1.PNG'" />
+              </button>
+            </div>
+            <div class="donation-item-content">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <button
+                *ngIf="isAdmin"
+                type="button"
+                class="delete-donation-btn"
+                [disabled]="deletingDonationId === item.id"
+                (click)="deleteDonationItem(item)">
+                {{ deletingDonationId === item.id ? 'ഡിലീറ്റ് ചെയ്യുന്നു...' : 'ഡിലീറ്റ് ചെയ്യുക' }}
+              </button>
+            </div>
+          </article>
+        </section>
+
+        <aside class="donation-info-column">
+          <div class="donation-info-actions admin-tabs" *ngIf="isAdmin">
+            <button
+              type="button"
+              class="admin-tab"
+              [class.active-admin-tab]="activeTab === 'edit'"
+              (click)="setActiveTab('edit')">
+              ബാങ്ക് വിവരങ്ങൾ മാറ്റുക
+            </button>
+          </div>
+
+          <article class="content-item-card bank-card">
+            <p class="meta">ബാങ്ക് വിവരങ്ങൾ</p>
+            <p class="meta">അക്കൗണ്ട് നമ്പർ - {{ donateInfo.bankAccountNumber }}</p>
+            <p class="meta">അക്കൗണ്ട് പേര് - {{ donateInfo.bankAccountName }}</p>
+            <p class="meta">IFSC കോഡ് - {{ donateInfo.bankIfscCode }}</p>
+          </article>
+
+          <article class="content-item-card upi-card">
+            <p class="meta">UPI</p>
+            <div class="upi-image-wrap">
+              <img [src]="donateInfo.upiImageUrl" alt="UPI QR Code" />
+            </div>
+          </article>
+        </aside>
+      </div>
+    </ng-container>
+
+    <ng-template #editDonateInfo>
+      <form class="donate-edit-form" (ngSubmit)="submit()" *ngIf="activeTab === 'edit'">
+        <label class="form-field">
+          <span>അക്കൗണ്ട് പേര്</span>
+          <input
+            type="text"
+            name="bankAccountName"
+            [(ngModel)]="formData.bankAccountName"
+            required />
+        </label>
+
+        <label class="form-field">
+          <span>അക്കൗണ്ട് നമ്പർ</span>
+          <input
+            type="text"
+            name="bankAccountNumber"
+            [(ngModel)]="formData.bankAccountNumber"
+            required />
+        </label>
+
+        <label class="form-field">
+          <span>IFSC കോഡ്</span>
+          <input
+            type="text"
+            name="bankIfscCode"
+            [(ngModel)]="formData.bankIfscCode"
+            required />
+        </label>
+
+        <label class="form-field">
+          <span>UPI QR ചിത്രം</span>
+          <input type="file" accept="image/*" (change)="onUpiFileSelected($event)" />
+          <small class="field-help">പുതിയ ചിത്രം തിരഞ്ഞെടുക്കാത്ത പക്ഷം നിലവിലെ UPI ചിത്രം തുടരും.</small>
+        </label>
+
+        <div class="upi-preview" *ngIf="upiPreviewUrl">
+          <img [src]="upiPreviewUrl" alt="UPI QR Preview" />
+        </div>
+
+        <div class="form-actions">
+          <button class="submit-btn" type="submit" [disabled]="isSaving">
+            {{ isSaving ? 'സംരക്ഷിക്കുന്നു...' : 'മാറ്റം സംരക്ഷിക്കുക' }}
+          </button>
+          <button class="cancel-btn" type="button" [disabled]="isSaving" (click)="cancelEdit()">
+            റദ്ദാക്കുക
+          </button>
+        </div>
+
+        <p class="status-message success" *ngIf="statusMessage && statusMessageType === 'success'">{{ statusMessage }}</p>
+        <p class="status-message error" *ngIf="statusMessage && statusMessageType === 'error'">{{ statusMessage }}</p>
+      </form>
+
+      <section class="donation-admin-panel" *ngIf="isAdmin && activeTab === 'items'">
+        <h3>സംഭാവന ഇനം ചേർക്കുക</h3>
+
+        <label class="form-field">
+          <span>പേര്</span>
+          <input type="text" [(ngModel)]="donationForm.title" name="donationTitle" required />
+        </label>
+
+        <label class="form-field">
+          <span>വിവരണം</span>
+          <textarea [(ngModel)]="donationForm.description" name="donationDescription" rows="3"></textarea>
+        </label>
+
+        <label class="form-field">
+          <span>ചിത്രം</span>
+          <input type="file" accept="image/*" (change)="onDonationItemImageSelected($event)" />
+        </label>
+
+        <div class="upi-preview" *ngIf="donationImagePreviewUrl">
+          <img [src]="donationImagePreviewUrl" alt="Donation item preview" />
+        </div>
+
+        <div class="form-actions">
+          <button class="submit-btn" type="button" [disabled]="isAddingDonationItem" (click)="addDonationItem()">
+            {{ isAddingDonationItem ? 'ചേർക്കുന്നു...' : 'സംഭാവന ഇനം ചേർക്കുക' }}
+          </button>
+        </div>
+
+        <p class="status-message success" *ngIf="statusMessage && statusMessageType === 'success'">{{ statusMessage }}</p>
+        <p class="status-message error" *ngIf="statusMessage && statusMessageType === 'error'">{{ statusMessage }}</p>
+      </section>
+    </ng-template>
+
+    <div
+      class="image-modal-backdrop"
+      *ngIf="isImageModalOpen"
+      (click)="closeImageModal()"
+      (keydown.escape)="closeImageModal()"
+      tabindex="0"
+      role="button"
+      aria-label="Close image preview">
+      <article class="image-modal-panel" (click)="$event.stopPropagation()">
+        <button type="button" class="image-modal-close" (click)="closeImageModal()">×</button>
+        <h3>{{ selectedImageTitle }}</h3>
+        <div class="image-modal-media">
+          <img [src]="selectedImageUrl" [alt]="selectedImageTitle" onerror="this.src='assets/images/Image1.PNG'" />
+        </div>
+        <p class="image-modal-description">{{ selectedImageDescription }}</p>
+      </article>
+    </div>
+
+  </article>
+</section>

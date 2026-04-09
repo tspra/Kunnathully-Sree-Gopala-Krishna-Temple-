@@ -1,0 +1,97 @@
+:host {
+  display: block;
+}
+
+.admin-tabs {
+  margin-bottom: 18px;
+}
+
+.event-admin-form {
+  margin-top: 4px;
+}
+
+.event-form {
+  display: grid;
+  gap: 16px;
+}
+
+.form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.form-field span {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(122, 86, 46, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-strong);
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.event-submit {
+  justify-self: start;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #9b4f26, #cf8339);
+  color: #fffaf2;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.event-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.status-message {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-weight: 600;
+}
+
+.status-message.success {
+  background: rgba(217, 241, 221, 0.9);
+  color: #1e6b38;
+}
+
+.status-message.error {
+  background: rgba(252, 224, 224, 0.92);
+  color: #9f2a2a;
+}
+
+.delete-event-btn {
+  margin-top: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(159, 42, 42, 0.3);
+  background: rgba(252, 224, 224, 0.92);
+  color: #8b1f1f;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.delete-event-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .event-submit {
+    width: 100%;
+    justify-self: stretch;
+  }
+}

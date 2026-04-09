@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "qpCt3jZ2f6fYxAUXtSXohUrEtsHlSLLtuCMG4TKoheg=",
+  "Source": "TempleApi",
+  "BasePath": "_content/TempleApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

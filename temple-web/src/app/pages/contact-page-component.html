@@ -1,0 +1,126 @@
+<section class="inner-banner">
+  <img src="assets/images/Image1.PNG" alt="ബന്ധപ്പെടുക" />
+  <div class="inner-banner-overlay">
+    <h1>ബന്ധപ്പെടുക</h1>
+  </div>
+</section>
+
+<section class="contact-shell">
+  <!-- View Tab -->
+  <article class="contact-panel" *ngIf="activeTab === 'view' || !isAdmin">
+    <!-- Admin Tabs -->
+    <div class="admin-tabs" *ngIf="isAdmin">
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="activeTab === 'view'"
+        (click)="setActiveTab('view')">
+        കാണുക
+      </button>
+      <button
+        type="button"
+        class="admin-tab"
+        [class.active-admin-tab]="activeTab === 'edit'"
+        (click)="setActiveTab('edit')">
+        എഡിറ്റ് ചെയ്യുക
+      </button>
+    </div>
+
+    <p class="section-tag">Contact</p>
+    <h2>കുന്നത്തുള്ളി ശ്രീ ഗോപാലകൃഷ്ണ ക്ഷേത്രം</h2>
+    <p>
+      ക്ഷേത്രവുമായി ബന്ധപ്പെട്ട പൂജ ബുക്കിംഗ്, വഴിപാടുകൾ, ദർശന സമയം, ഉത്സവ വിവരങ്ങൾ എന്നിവയ്ക്ക്
+      താഴെ കൊടുത്തിരിക്കുന്ന വിവരങ്ങളിലൂടെ ബന്ധപ്പെടാം.
+    </p>
+
+    <div class="contact-grid">
+      <article class="contact-card" *ngFor="let item of contactItems">
+        <p class="meta">{{ item.label }}</p>
+        <h3>{{ item.value }}</h3>
+      </article>
+    </div>
+  </article>
+
+  <!-- Edit Tab (Admin Only) -->
+  <article class="contact-panel edit-panel" *ngIf="activeTab === 'edit' && isAdmin">
+    <p class="section-tag">Edit Contact</p>
+    <h2>സമ്പർക്ക വിവരങ്ങൾ എഡിറ്റ് ചെയ്യുക</h2>
+    
+    <form (ngSubmit)="submitEdit()" #contactForm="ngForm">
+      <div class="form-group">
+        <label for="address">വിലാസം:</label>
+        <textarea
+          id="address"
+          [(ngModel)]="editForm.address"
+          name="address"
+          placeholder="ക്ഷേത്രത്തിന്റെ പൂർണ്ണ വിലാസം നൽകുക..."
+          rows="3"
+          required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">ഫോൺ നമ്പർ:</label>
+        <input
+          type="tel"
+          id="phone"
+          [(ngModel)]="editForm.phone"
+          name="phone"
+          placeholder="ഉദാ: +91 99999 99999"
+          pattern="^[0-9+\-()\s]{10,20}$"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">ഇമെയിൽ:</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="editForm.email"
+          name="email"
+          placeholder="ഉദാ: info@temple.org"
+          required />
+      </div>
+
+      <div class="form-group">
+        <label for="visitingHours">ദർശന സമയം/ഓഫീസ് സമയം:</label>
+        <textarea
+          id="visitingHours"
+          [(ngModel)]="editForm.visitingHours"
+          name="visitingHours"
+        
+          rows="4"
+          required></textarea>
+        <p class="help-text">ഓരോ സമയ ബ്ലോക്ക് പുതിയ വരിയിൽ നൽകുക (എന്റർ കീ ഉപയോഗിച്ച് വേർതിരിക്കുക)</p>
+      </div>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="!contactForm.valid || submitting">
+          {{ submitting ? 'സംരക്ഷിക്കുന്നു...' : 'മാറ്റം സംരക്ഷിക്കുക' }}
+        </button>
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="setActiveTab('view')"
+          [disabled]="submitting">
+          പരിത്യജിക്കുക
+        </button>
+      </div>
+
+      <p *ngIf="updateMessage" class="update-message" [class.success]="updateMessageType === 'success'" [class.error]="updateMessageType === 'error'">
+        {{ updateMessage }}
+      </p>
+    </form>
+  </article>
+
+  <article class="contact-panel">
+    <p class="section-tag">Office Hours</p>
+    <h2>ദർശനവും ഓഫീസ് സമയവും</h2>
+    <ul class="hours-list">
+      <li *ngFor="let line of officeHours">{{ line }}</li>
+    </ul>
+    <a class="book-now" routerLink="/pooja">പൂജ ബുക്കിംഗിലേക്ക് പോകുക</a>
+  </article>
+</section>

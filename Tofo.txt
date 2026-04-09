@@ -1,0 +1,8 @@
+admin can book pooja- done with hardcoded pwd ad username
+change password option for admins
+admins can see upcoming pooja bookings
+admins can add upcoming events
+admins can delete old events
+
+hosting website checks
+home page styles and content modification
