@@ -31,7 +31,9 @@ builder.Services.AddDbContext<TempleContentDbContext>(options =>
     var connectionString = builder.Configuration.GetConnectionString("TempleContent")
         ?? "Data Source=temple-content.db";
 
-    if (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase)
+    if (connectionString.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase)
+        || connectionString.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase)
+        || connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase)
         || connectionString.Contains("Username=", StringComparison.OrdinalIgnoreCase))
     {
         options.UseNpgsql(connectionString);

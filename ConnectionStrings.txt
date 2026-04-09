@@ -1,0 +1,15 @@
+Neon COnnectionstring
+postgresql://neondb_owner:npg_3tXhKMS8gGiJ@ep-super-violet-a1krw0om.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+postgresql://neondb_owner:npg_3tXhKMS8gGiJ@ep-super-violet-a1krw0om-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+
+Neon COnnection parameters
+Host
+ep-super-violet-a1krw0om.ap-southeast-1.aws.neon.tech
+Database
+neondb
+Role
+neondb_owner
+Password
+************
+Pooler host
+ep-super-violet-a1krw0om-pooler.ap-southeast-1.aws.neon.tech
