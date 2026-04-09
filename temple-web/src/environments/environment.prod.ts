@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://your-api-service.onrender.com'
+  apiBaseUrl: 'https://kunnathully-sree-gopala-krishna-temple-1.onrender.com'
 };
