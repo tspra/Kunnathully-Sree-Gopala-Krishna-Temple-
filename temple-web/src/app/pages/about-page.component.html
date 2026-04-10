@@ -6,90 +6,10 @@
 </section>
 
 <section class="about-shell">
-  <!-- Admin Tabs -->
-  <div class="admin-tabs" *ngIf="isAdmin">
-    <button
-      type="button"
-      class="admin-tab"
-      [class.active-admin-tab]="activeTab === 'view'"
-      (click)="setActiveTab('view')">
-      കാണുക
-    </button>
-    <button
-      type="button"
-      class="admin-tab"
-      [class.active-admin-tab]="activeTab === 'edit'"
-      (click)="setActiveTab('edit')">
-      എഡിറ്റ് ചെയ്യുക
-    </button>
-  </div>
-
-  <!-- View Tab -->
-  <article class="about-panel" *ngIf="activeTab === 'view' || !isAdmin">
+  <article class="about-panel">
     <p class="section-tag">About</p>
     <h1>{{ content.templeName }}</h1>
     <h2>{{ content.title }}</h2>
-    <p *ngIf="loading" class="status">ക്ഷേത്ര വിവരങ്ങൾ ലോഡ് ചെയ്യുന്നു...</p>
-    <p *ngIf="!loading && content.description" class="about-description">{{ content.description }}</p>
+    <p class="about-description">{{ content.description }}</p>
   </article>
-
-  <!-- Edit Tab (Admin Only) -->
-  <div class="about-panel edit-panel" *ngIf="activeTab === 'edit' && isAdmin">
-    <h2>ചരിത്രം എഡിറ്റ് ചെയ്യുക</h2>
-    
-    <form (ngSubmit)="submitEdit()" #aboutForm="ngForm">
-      <div class="form-group">
-        <label for="templeName">ക്ഷേത്രത്തിന്റെ പേര്:</label>
-        <input
-          type="text"
-          id="templeName"
-          [(ngModel)]="editForm.templeName"
-          name="templeName"
-          placeholder="ഉദാ: കുന്നത്തുള്ളി ശ്രീ ഗോപാലകൃഷ്ണ ക്ഷേത്രം"
-          required />
-      </div>
-
-      <div class="form-group">
-        <label for="title">ശീർഷകം:</label>
-        <input
-          type="text"
-          id="title"
-          [(ngModel)]="editForm.title"
-          name="title"
-          placeholder="ഉദാ: ഭക്തി, സംസ്കാരം, സമൂഹം എന്നിവയെ സേവിക്കുന്ന ഒരു പുണ്യസ്ഥലം"
-          required />
-      </div>
-
-      <div class="form-group">
-        <label for="description">വിവരണം/ചരിത്രം:</label>
-        <textarea
-          id="description"
-          [(ngModel)]="editForm.description"
-          name="description"
-          placeholder="ക്ഷേത്രത്തിന്റെ ചരിത്രം കൂടാതെ വിവരണം നൽകുക..."
-          rows="8"
-          required></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button
-          type="submit"
-          class="submit-btn"
-          [disabled]="!aboutForm.valid || submitting">
-          {{ submitting ? 'സംരക്ഷിക്കുന്നു...' : 'മാറ്റം സംരക്ഷിക്കുക' }}
-        </button>
-        <button
-          type="button"
-          class="cancel-btn"
-          (click)="setActiveTab('view')"
-          [disabled]="submitting">
-          പരിത്യജിക്കുക
-        </button>
-      </div>
-
-      <p *ngIf="updateMessage" class="update-message" [class.success]="updateMessageType === 'success'" [class.error]="updateMessageType === 'error'">
-        {{ updateMessage }}
-      </p>
-    </form>
-  </div>
 </section>
