@@ -12,8 +12,7 @@ export class VisitPageComponent implements OnInit {
   visitInfo: VisitInfo = {
     address: '-',
     phone: '-',
-    email: '-',
-    visitingHours: '-'
+    email: '-'
   };
   galleryImages: GalleryImage[] = [];
   readonly currentPicturesTab = 'current';

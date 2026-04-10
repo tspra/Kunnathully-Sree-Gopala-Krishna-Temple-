@@ -47,8 +47,7 @@ const fallbackContent: TempleContent = {
   contact: {
     address: '125 Lotus Avenue, Heritage Square, Your City',
     phone: '+1 (555) 108-1088',
-    email: 'info@srianandamandir.org',
-    visitingHours: 'Open daily from 5:30 AM to 8:30 PM'
+    email: 'info@srianandamandir.org'
   }
 };
 
@@ -67,8 +66,7 @@ export class AppComponent implements OnInit {
   visitInfo: VisitInfo = {
     address: '',
     phone: '',
-    email: '',
-    visitingHours: ''
+    email: ''
   };
 
   constructor(

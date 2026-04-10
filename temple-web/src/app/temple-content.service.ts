@@ -46,8 +46,7 @@ export class TempleContentService {
         of({
           address: '',
           phone: '',
-          email: '',
-          visitingHours: ''
+          email: ''
         } as VisitInfo))
     );
 

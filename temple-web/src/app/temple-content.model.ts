@@ -128,14 +128,12 @@ export interface VisitInfo {
   address: string;
   phone: string;
   email: string;
-  visitingHours: string;
 }
 
 export interface UpdateVisitInfoRequest {
   address: string;
   phone: string;
   email: string;
-  visitingHours: string;
 }
 
 export interface GalleryImage {

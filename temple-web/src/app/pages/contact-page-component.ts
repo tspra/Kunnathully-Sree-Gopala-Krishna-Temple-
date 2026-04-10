@@ -19,7 +19,7 @@ export class ContactPageComponent implements OnInit {
     },
     {
       label: 'ഫോൺ നമ്പർ',
-      value: '+91 99999 99999'
+      value: '+91 9846246462, +919847244135'
     },
     {
       label: 'ഇമെയിൽ',
@@ -35,13 +35,12 @@ export class ContactPageComponent implements OnInit {
   visitInfo: VisitInfo = {
     address: '',
     phone: '',
-    email: '',
-    visitingHours: ''
+    email: ''
   };
 
   isAdmin = false;
   activeTab: 'view' | 'edit' = 'view';
-  editForm = { address: '', phone: '', email: '', visitingHours: '' };
+  editForm: UpdateVisitInfoRequest = { address: '', phone: '', email: '' };
   submitting = false;
   updateMessage = '';
   updateMessageType: 'success' | 'error' = 'success';
@@ -52,11 +51,6 @@ export class ContactPageComponent implements OnInit {
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
     this.loadVisitInfo();
-  }
-
-  get visitingHoursPlaceholder(): string {
-    return 'രാവിലെ: 06:00 AM - 09:00 PM\
-വൈകുന്നേരം: 05:30 PM - 08:00 PM';
   }
 
   loadVisitInfo(): void {
@@ -98,7 +92,7 @@ export class ContactPageComponent implements OnInit {
   }
 
   submitEdit(): void {
-    if (!this.editForm.address.trim() || !this.editForm.phone.trim() || !this.editForm.email.trim() || !this.editForm.visitingHours.trim()) {
+    if (!this.editForm.address.trim() || !this.editForm.phone.trim() || !this.editForm.email.trim()) {
       this.updateMessage = 'എല്ലാ ഫീൽഡുകളും പൂരിപ്പിക്കേണ്ടതാണ്.';
       this.updateMessageType = 'error';
       return;
@@ -109,7 +103,7 @@ export class ContactPageComponent implements OnInit {
 
     console.log('Submitting contact edit with data:', this.editForm);
 
-    this.contentService.updateVisitInfo(this.editForm as any).subscribe({
+    this.contentService.updateVisitInfo(this.editForm).subscribe({
       next: (updatedData: VisitInfo) => {
         console.log('Update successful:', updatedData);
         this.visitInfo = updatedData;

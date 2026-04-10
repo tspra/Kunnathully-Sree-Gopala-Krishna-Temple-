@@ -308,7 +308,7 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
             return NotFound();
         }
 
-        return Ok(new VisitInfoDto(visit.Address, visit.Phone, visit.Email, visit.VisitingHours));
+        return Ok(new VisitInfoDto(visit.Address, visit.Phone, visit.Email));
     }
 
     [Authorize(Roles = "Admin")]
@@ -326,11 +326,10 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
         visit.Address = request.Address.Trim();
         visit.Phone = request.Phone.Trim();
         visit.Email = request.Email.Trim();
-        visit.VisitingHours = request.VisitingHours.Trim();
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Ok(new VisitInfoDto(visit.Address, visit.Phone, visit.Email, visit.VisitingHours));
+        return Ok(new VisitInfoDto(visit.Address, visit.Phone, visit.Email));
     }
 
     [HttpGet("gallery")]

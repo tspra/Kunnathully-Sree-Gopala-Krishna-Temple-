@@ -91,8 +91,6 @@ public class VisitInfoEntity
     public string Phone { get; set; } = string.Empty;
 
     public string Email { get; set; } = string.Empty;
-
-    public string VisitingHours { get; set; } = string.Empty;
 }
 
 public class GalleryImageEntity

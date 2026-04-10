@@ -51,8 +51,7 @@ public static class TempleDataSeeder
             {
                 Address = "125 Lotus Avenue, Heritage Square, Your City",
                 Phone = "+1 (555) 108-1088",
-                Email = "info@srianandamandir.org",
-                VisitingHours = "Open daily from 5:30 AM to 8:30 PM"
+                Email = "info@srianandamandir.org"
             });
         }
 

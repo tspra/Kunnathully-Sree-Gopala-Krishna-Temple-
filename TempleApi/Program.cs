@@ -99,6 +99,7 @@ static void EnsureCompatibilityColumns(TempleContentDbContext dbContext)
     if (dbContext.Database.IsNpgsql())
     {
         dbContext.Database.ExecuteSqlRaw("ALTER TABLE \"Events\" ADD COLUMN IF NOT EXISTS \"ImageUrl\" text NOT NULL DEFAULT '';");
+        dbContext.Database.ExecuteSqlRaw("ALTER TABLE \"VisitInfos\" DROP COLUMN IF EXISTS \"VisitingHours\";");
         return;
     }
 
@@ -111,6 +112,15 @@ static void EnsureCompatibilityColumns(TempleContentDbContext dbContext)
         catch
         {
             // Column already exists in existing SQLite database.
+        }
+
+        try
+        {
+            dbContext.Database.ExecuteSqlRaw("ALTER TABLE \"VisitInfos\" DROP COLUMN \"VisitingHours\";");
+        }
+        catch
+        {
+            // Column does not exist or SQLite engine does not support drop column.
         }
     }
 }

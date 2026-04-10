@@ -163,7 +163,7 @@ public sealed class ChangePasswordRequest
 	public string NewPassword { get; init; } = string.Empty;
 }
 
-public sealed record VisitInfoDto(string Address, string Phone, string Email, string VisitingHours);
+public sealed record VisitInfoDto(string Address, string Phone, string Email);
 
 public sealed class UpdateVisitInfoRequest
 {
@@ -182,11 +182,6 @@ public sealed class UpdateVisitInfoRequest
 	[StringLength(150)]
 	[JsonPropertyName("email")]
 	public string Email { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(500, MinimumLength = 10)]
-	[JsonPropertyName("visitingHours")]
-	public string VisitingHours { get; init; } = string.Empty;
 }
 
 public sealed record GalleryImageDto(int Id, string Title, string ImageUrl, string Description);
