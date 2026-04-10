@@ -4,94 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 
-public sealed record AboutPageDto(string TempleName, string Title, string Description);
-
-public sealed record HomeNoticeDto(
-	string Label,
-	string Title,
-	string Description,
-	string DarshanHeading,
-	string MorningDarshanTime,
-	string EveningDarshanTime);
-
-public sealed class UpdateHomeNoticeRequest
-{
-	[Required]
-	[StringLength(100, MinimumLength = 2)]
-	[JsonPropertyName("label")]
-	public string Label { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(200, MinimumLength = 2)]
-	[JsonPropertyName("title")]
-	public string Title { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(1000, MinimumLength = 10)]
-	[JsonPropertyName("description")]
-	public string Description { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(100, MinimumLength = 2)]
-	[JsonPropertyName("darshanHeading")]
-	public string DarshanHeading { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(100, MinimumLength = 2)]
-	[JsonPropertyName("morningDarshanTime")]
-	public string MorningDarshanTime { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(100, MinimumLength = 2)]
-	[JsonPropertyName("eveningDarshanTime")]
-	public string EveningDarshanTime { get; init; } = string.Empty;
-}
-
-public sealed class UpdateAboutPageRequest
-{
-	[Required]
-	[StringLength(150, MinimumLength = 2)]
-	[JsonPropertyName("templeName")]
-	public string TempleName { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(300, MinimumLength = 2)]
-	[JsonPropertyName("title")]
-	public string Title { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(2000, MinimumLength = 10)]
-	[JsonPropertyName("description")]
-	public string Description { get; init; } = string.Empty;
-}
-
-public sealed record ScheduleItemDto(string Time, string Title, string Description, string Price, string Category);
-
-public sealed class UpdateScheduleItemRequest
-{
-	[StringLength(50)]
-	[JsonPropertyName("time")]
-	public string Time { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(150, MinimumLength = 2)]
-	[JsonPropertyName("title")]
-	public string Title { get; init; } = string.Empty;
-
-	[StringLength(500)]
-	[JsonPropertyName("description")]
-	public string Description { get; init; } = string.Empty;
-
-	[StringLength(50)]
-	[JsonPropertyName("price")]
-	public string Price { get; init; } = string.Empty;
-
-	[StringLength(100)]
-	[JsonPropertyName("category")]
-	public string Category { get; init; } = string.Empty;
-}
-
-public sealed record EventDto(int Id, string Title, string Date, string Description);
+public sealed record EventDto(int Id, string Title, string Date, string Description, string ImageUrl);
 
 public sealed class CreateEventRequest
 {
@@ -105,7 +18,19 @@ public sealed class CreateEventRequest
 
 	[StringLength(500)]
 	public string Description { get; init; } = string.Empty;
+
+	[StringLength(500)]
+	[JsonPropertyName("imageUrl")]
+	public string ImageUrl { get; init; } = string.Empty;
 }
+
+public sealed class UploadEventImageRequest
+{
+	[Required]
+	public IFormFile? File { get; init; }
+}
+
+public sealed record EventImageUploadResponse(string ImageUrl);
 
 public sealed record DonationPlanDto(int Id, string Title, string Description, string ImageUrl);
 
@@ -265,20 +190,6 @@ public sealed class UpdateVisitInfoRequest
 }
 
 public sealed record GalleryImageDto(int Id, string Title, string ImageUrl, string Description);
-
-public sealed class CreateGalleryImageRequest
-{
-	[Required]
-	[StringLength(150, MinimumLength = 2)]
-	public string Title { get; init; } = string.Empty;
-
-	[Required]
-	[StringLength(500, MinimumLength = 5)]
-	public string ImageUrl { get; init; } = string.Empty;
-
-	[StringLength(500)]
-	public string Description { get; init; } = string.Empty;
-}
 
 public sealed class UploadGalleryImageRequest
 {

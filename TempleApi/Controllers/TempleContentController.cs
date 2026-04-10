@@ -11,155 +11,20 @@ namespace TempleApi.Controllers;
 
 [ApiController]
 [Route("api/content")]
-public class TempleContentController(TempleContentDbContext dbContext, IWebHostEnvironment environment) : ControllerBase
+public class TempleContentController(TempleContentDbContext dbContext, IWebHostEnvironment environment, IConfiguration configuration) : ControllerBase
 {
-    [HttpGet("about")]
-    public async Task<ActionResult<AboutPageDto>> GetAbout(CancellationToken cancellationToken)
-    {
-        var temple = await dbContext.TempleInfos.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
-        if (temple is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(new AboutPageDto(temple.TempleName, temple.AboutTitle, temple.AboutDescription));
-    }
-
-    [HttpGet("home-notice")]
-    public async Task<ActionResult<HomeNoticeDto>> GetHomeNotice(CancellationToken cancellationToken)
-    {
-        var temple = await dbContext.TempleInfos.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
-        if (temple is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(new HomeNoticeDto(
-            string.IsNullOrWhiteSpace(temple.HomeNoticeLabel) ? "ക്ഷേത്ര അറിയിപ്പ്" : temple.HomeNoticeLabel,
-            string.IsNullOrWhiteSpace(temple.HomeNoticeTitle) ? "ഇന്നത്തെ പ്രധാന വിവരം" : temple.HomeNoticeTitle,
-            string.IsNullOrWhiteSpace(temple.HomeNoticeDescription) ? "രാവിലെ 06:00 മുതൽ 09:00 വരെ ദർശനം ലഭ്യമാണ്. വൈകുന്നേരം 05:00 മുതൽ 08:00 വരെ വീണ്ടും ദർശനം ഉണ്ടായിരിക്കും." : temple.HomeNoticeDescription,
-            string.IsNullOrWhiteSpace(temple.DarshanHeading) ? "തിങ്കൾ മുതൽ ഞായർ വരെ" : temple.DarshanHeading,
-            string.IsNullOrWhiteSpace(temple.MorningDarshanTime) ? "05:00 AM - 12:00 PM" : temple.MorningDarshanTime,
-            string.IsNullOrWhiteSpace(temple.EveningDarshanTime) ? "05:00 PM - 08:00 PM" : temple.EveningDarshanTime));
-    }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPut("about")]
-    public async Task<ActionResult<AboutPageDto>> UpdateAbout(
-        UpdateAboutPageRequest request,
-        CancellationToken cancellationToken)
-    {
-        var temple = await dbContext.TempleInfos.FirstOrDefaultAsync(cancellationToken);
-        if (temple is null)
-        {
-            return NotFound(new { message = "Temple info not found." });
-        }
-
-        temple.TempleName = request.TempleName.Trim();
-        temple.AboutTitle = request.Title.Trim();
-        temple.AboutDescription = request.Description.Trim();
-
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return Ok(new AboutPageDto(temple.TempleName, temple.AboutTitle, temple.AboutDescription));
-    }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPut("home-notice")]
-    public async Task<ActionResult<HomeNoticeDto>> UpdateHomeNotice(
-        UpdateHomeNoticeRequest request,
-        CancellationToken cancellationToken)
-    {
-        var temple = await dbContext.TempleInfos.FirstOrDefaultAsync(cancellationToken);
-        if (temple is null)
-        {
-            return NotFound(new { message = "Temple info not found." });
-        }
-
-        temple.HomeNoticeLabel = request.Label.Trim();
-        temple.HomeNoticeTitle = request.Title.Trim();
-        temple.HomeNoticeDescription = request.Description.Trim();
-        temple.DarshanHeading = request.DarshanHeading.Trim();
-        temple.MorningDarshanTime = request.MorningDarshanTime.Trim();
-        temple.EveningDarshanTime = request.EveningDarshanTime.Trim();
-
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return Ok(new HomeNoticeDto(
-            temple.HomeNoticeLabel,
-            temple.HomeNoticeTitle,
-            temple.HomeNoticeDescription,
-            temple.DarshanHeading,
-            temple.MorningDarshanTime,
-            temple.EveningDarshanTime));
-    }
-
-    [HttpGet("schedule")]
-    public async Task<ActionResult<IReadOnlyList<ScheduleItemDto>>> GetSchedule(CancellationToken cancellationToken)
-    {
-        var schedule = await dbContext.ScheduleItems
-            .AsNoTracking()
-            .OrderBy(item => item.SortOrder)
-            .Select(item => new ScheduleItemDto(
-                item.Time,
-                item.Title,
-                string.Equals(item.Description, "വഴിപാടു", StringComparison.Ordinal) ? string.Empty : item.Description,
-                string.IsNullOrWhiteSpace(item.Price) ? "₹ 0.00" : item.Price,
-                string.IsNullOrWhiteSpace(item.Category) ? "എല്ലാം" : item.Category))
-            .ToListAsync(cancellationToken);
-
-        return Ok(schedule);
-    }
-
-    [Authorize(Roles = "Admin")]
-    [HttpPut("schedule")]
-    public async Task<ActionResult<IReadOnlyList<ScheduleItemDto>>> UpdateSchedule(
-        IReadOnlyList<UpdateScheduleItemRequest> request,
-        CancellationToken cancellationToken)
-    {
-        if (request.Count == 0)
-        {
-            return BadRequest(new { message = "At least one schedule item is required." });
-        }
-
-        var existingItems = await dbContext.ScheduleItems.ToListAsync(cancellationToken);
-        dbContext.ScheduleItems.RemoveRange(existingItems);
-
-        var newItems = request
-            .Select((item, index) => new ScheduleItemEntity
-            {
-                SortOrder = index + 1,
-                Time = string.IsNullOrWhiteSpace(item.Time) ? "-" : item.Time.Trim(),
-                Title = item.Title.Trim(),
-                Description = string.IsNullOrWhiteSpace(item.Description) ? "വഴിപാടു" : item.Description.Trim(),
-                Price = string.IsNullOrWhiteSpace(item.Price) ? "₹ 0.00" : item.Price.Trim(),
-                Category = string.IsNullOrWhiteSpace(item.Category) ? "എല്ലാം" : item.Category.Trim()
-            })
-            .ToList();
-
-        dbContext.ScheduleItems.AddRange(newItems);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        var schedule = newItems
-            .OrderBy(item => item.SortOrder)
-            .Select(item => new ScheduleItemDto(
-                item.Time,
-                item.Title,
-                string.Equals(item.Description, "വഴിപാടു", StringComparison.Ordinal) ? string.Empty : item.Description,
-                string.IsNullOrWhiteSpace(item.Price) ? "₹ 0.00" : item.Price,
-                string.IsNullOrWhiteSpace(item.Category) ? "എല്ലാം" : item.Category))
-            .ToList();
-
-        return Ok(schedule);
-    }
-
     [HttpGet("events")]
     public async Task<ActionResult<IReadOnlyList<EventDto>>> GetEvents(CancellationToken cancellationToken)
     {
         var eventsData = await dbContext.Events
             .AsNoTracking()
             .OrderBy(eventItem => eventItem.Id)
-            .Select(eventItem => new EventDto(eventItem.Id, eventItem.Title, eventItem.Date, eventItem.Description))
+            .Select(eventItem => new EventDto(
+                eventItem.Id,
+                eventItem.Title,
+                eventItem.Date,
+                eventItem.Description,
+                string.IsNullOrWhiteSpace(eventItem.ImageUrl) ? "assets/images/Image1.PNG" : eventItem.ImageUrl))
             .ToListAsync(cancellationToken);
 
         return Ok(eventsData);
@@ -175,7 +40,8 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
         {
             Title = request.Title.Trim(),
             Date = request.Date.Trim(),
-            Description = request.Description.Trim()
+            Description = request.Description.Trim(),
+            ImageUrl = string.IsNullOrWhiteSpace(request.ImageUrl) ? "assets/images/Image1.PNG" : request.ImageUrl.Trim()
         };
 
         dbContext.Events.Add(eventEntity);
@@ -183,7 +49,43 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
 
         return CreatedAtAction(
             nameof(GetEvents),
-            new EventDto(eventEntity.Id, eventEntity.Title, eventEntity.Date, eventEntity.Description));
+            new EventDto(eventEntity.Id, eventEntity.Title, eventEntity.Date, eventEntity.Description, eventEntity.ImageUrl));
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPost("events/upload-image")]
+    [RequestSizeLimit(10_000_000)]
+    public async Task<ActionResult<EventImageUploadResponse>> UploadEventImage(
+        [FromForm] UploadEventImageRequest request,
+        CancellationToken cancellationToken)
+    {
+        if (request.File is null || request.File.Length == 0)
+        {
+            return BadRequest(new { message = "Please select an image file." });
+        }
+
+        if (!request.File.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new { message = "Only image files are allowed." });
+        }
+
+        var extension = Path.GetExtension(request.File.FileName);
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            extension = ".jpg";
+        }
+
+        var uploadsDirectory = GetUploadsDirectory();
+
+        var fileName = $"event_{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
+        var savedPath = Path.Combine(uploadsDirectory, fileName);
+
+        await using (var fileStream = System.IO.File.Create(savedPath))
+        {
+            await request.File.CopyToAsync(fileStream, cancellationToken);
+        }
+
+        return Ok(new EventImageUploadResponse($"/api/content/gallery/file/{fileName}"));
     }
 
     [Authorize(Roles = "Admin")]
@@ -288,8 +190,7 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
             extension = ".jpg";
         }
 
-        var uploadsDirectory = Path.Combine(environment.ContentRootPath, "Uploads");
-        Directory.CreateDirectory(uploadsDirectory);
+        var uploadsDirectory = GetUploadsDirectory();
 
         var fileName = $"donate_{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
         var savedPath = Path.Combine(uploadsDirectory, fileName);
@@ -377,8 +278,7 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
             extension = ".png";
         }
 
-        var uploadsDirectory = Path.Combine(environment.ContentRootPath, "Uploads");
-        Directory.CreateDirectory(uploadsDirectory);
+        var uploadsDirectory = GetUploadsDirectory();
 
         var fileName = $"donate_upi_{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
         var savedPath = Path.Combine(uploadsDirectory, fileName);
@@ -446,27 +346,6 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPost("gallery")]
-    public async Task<ActionResult<GalleryImageDto>> CreateGalleryImage(
-        CreateGalleryImageRequest request,
-        CancellationToken cancellationToken)
-    {
-        var image = new GalleryImageEntity
-        {
-            Title = request.Title.Trim(),
-            ImageUrl = request.ImageUrl.Trim(),
-            Description = request.Description.Trim()
-        };
-
-        dbContext.GalleryImages.Add(image);
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return CreatedAtAction(
-            nameof(GetGalleryImages),
-            new GalleryImageDto(image.Id, image.Title, image.ImageUrl, image.Description));
-    }
-
-    [Authorize(Roles = "Admin")]
     [HttpPost("gallery/upload")]
     [RequestSizeLimit(10_000_000)]
     public async Task<ActionResult<GalleryImageDto>> UploadGalleryImage(
@@ -489,8 +368,7 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
             extension = ".jpg";
         }
 
-        var uploadsDirectory = Path.Combine(environment.ContentRootPath, "Uploads");
-        Directory.CreateDirectory(uploadsDirectory);
+        var uploadsDirectory = GetUploadsDirectory();
 
         var fileName = $"gallery_{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
         var savedPath = Path.Combine(uploadsDirectory, fileName);
@@ -524,7 +402,7 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
             return NotFound();
         }
 
-        var uploadsDirectory = Path.Combine(environment.ContentRootPath, "Uploads");
+        var uploadsDirectory = GetUploadsDirectory();
         var filePath = Path.Combine(uploadsDirectory, safeFileName);
         if (!System.IO.File.Exists(filePath))
         {
@@ -538,6 +416,17 @@ public class TempleContentController(TempleContentDbContext dbContext, IWebHostE
         }
 
         return PhysicalFile(filePath, contentType);
+    }
+
+    private string GetUploadsDirectory()
+    {
+        var configuredPath = configuration["Uploads:RootPath"];
+        var uploadsDirectory = string.IsNullOrWhiteSpace(configuredPath)
+            ? Path.Combine(environment.ContentRootPath, "Uploads")
+            : configuredPath;
+
+        Directory.CreateDirectory(uploadsDirectory);
+        return uploadsDirectory;
     }
 
     private static DateOnly? ParseEventDate(string value)

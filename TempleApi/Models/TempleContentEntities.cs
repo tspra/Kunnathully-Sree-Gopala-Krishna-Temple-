@@ -6,26 +6,6 @@ public class TempleInfoEntity
 {
     public int Id { get; set; }
 
-    public string TempleName { get; set; } = string.Empty;
-
-    public string AboutTitle { get; set; } = string.Empty;
-
-    public string AboutDescription { get; set; } = string.Empty;
-
-    public string HomeNoticeLabel { get; set; } = string.Empty;
-
-    public string HomeNoticeTitle { get; set; } = string.Empty;
-
-    public string HomeNoticeDescription { get; set; } = string.Empty;
-
-    public string HomeNoticeLinkText { get; set; } = string.Empty;
-
-    public string DarshanHeading { get; set; } = string.Empty;
-
-    public string MorningDarshanTime { get; set; } = string.Empty;
-
-    public string EveningDarshanTime { get; set; } = string.Empty;
-
     public string BankAccountName { get; set; } = string.Empty;
 
     public string BankAccountNumber { get; set; } = string.Empty;
@@ -33,23 +13,6 @@ public class TempleInfoEntity
     public string BankIfscCode { get; set; } = string.Empty;
 
     public string DonateUpiImageUrl { get; set; } = string.Empty;
-}
-
-public class ScheduleItemEntity
-{
-    public int Id { get; set; }
-
-    public int SortOrder { get; set; }
-
-    public string Time { get; set; } = string.Empty;
-
-    public string Title { get; set; } = string.Empty;
-
-    public string Description { get; set; } = string.Empty;
-
-    public string Price { get; set; } = string.Empty;
-
-    public string Category { get; set; } = string.Empty;
 }
 
 public class EventEntity
@@ -61,6 +24,8 @@ public class EventEntity
     public string Date { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
+
+    public string ImageUrl { get; set; } = string.Empty;
 }
 
 public class DonationPlanEntity

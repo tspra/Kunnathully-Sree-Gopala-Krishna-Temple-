@@ -7,8 +7,6 @@ public class TempleContentDbContext(DbContextOptions<TempleContentDbContext> opt
 {
     public DbSet<TempleInfoEntity> TempleInfos => Set<TempleInfoEntity>();
 
-    public DbSet<ScheduleItemEntity> ScheduleItems => Set<ScheduleItemEntity>();
-
     public DbSet<EventEntity> Events => Set<EventEntity>();
 
     public DbSet<DonationPlanEntity> DonationPlans => Set<DonationPlanEntity>();

@@ -1,33 +1,3 @@
-export interface AboutPageContent {
-  templeName: string;
-  title: string;
-  description: string;
-}
-
-export interface UpdateAboutPageRequest {
-  templeName: string;
-  title: string;
-  description: string;
-}
-
-export interface HomeNotice {
-  label: string;
-  title: string;
-  description: string;
-  darshanHeading: string;
-  morningDarshanTime: string;
-  eveningDarshanTime: string;
-}
-
-export interface UpdateHomeNoticeRequest {
-  label: string;
-  title: string;
-  description: string;
-  darshanHeading: string;
-  morningDarshanTime: string;
-  eveningDarshanTime: string;
-}
-
 export interface ScheduleItem {
   time: string;
   title: string;
@@ -47,12 +17,14 @@ export interface TempleEvent {
   title: string;
   date: string;
   description: string;
+  imageUrl?: string;
 }
 
 export interface CreateEventRequest {
   title: string;
   date: string;
   description: string;
+  imageUrl?: string;
 }
 
 export interface GalleryHighlight {
@@ -168,12 +140,6 @@ export interface UpdateVisitInfoRequest {
 
 export interface GalleryImage {
   id?: number;
-  title: string;
-  imageUrl: string;
-  description: string;
-}
-
-export interface CreateGalleryImageRequest {
   title: string;
   imageUrl: string;
   description: string;

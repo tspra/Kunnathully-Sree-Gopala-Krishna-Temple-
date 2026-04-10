@@ -76,7 +76,7 @@
           <article class="content-item-card upi-card">
             <p class="meta">UPI</p>
             <div class="upi-image-wrap">
-              <img [src]="donateInfo.upiImageUrl" alt="UPI QR Code" />
+              <img [src]="donateInfo.upiImageUrl" alt="UPI QR Code" onerror="this.src='assets/images/upi.png'" />
             </div>
           </article>
         </aside>

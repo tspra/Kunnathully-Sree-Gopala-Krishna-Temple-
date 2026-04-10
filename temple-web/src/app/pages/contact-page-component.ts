@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { HomeNotice, VisitInfo, UpdateVisitInfoRequest } from '../temple-content.model';
+import { VisitInfo, UpdateVisitInfoRequest } from '../temple-content.model';
 import { TempleContentService } from '../temple-content.service';
 import { AuthService } from '../auth.service';
 
@@ -28,8 +28,8 @@ export class ContactPageComponent implements OnInit {
   ];
 
   officeHours = [
-    'രാവിലെ: 05:00 AM - 12:00 PM',
-    'വൈകുന്നേരം: 05:00 PM - 08:00 PM'
+    'രാവിലെ: 06:00 AM - 09:00 AM',
+    'വൈകുന്നേരം: 05:30 PM - 08:00 PM'
   ];
 
   visitInfo: VisitInfo = {
@@ -37,15 +37,6 @@ export class ContactPageComponent implements OnInit {
     phone: '',
     email: '',
     visitingHours: ''
-  };
-
-  homeNotice: HomeNotice = {
-    label: '',
-    title: '',
-    description: '',
-    darshanHeading: '',
-    morningDarshanTime: '05:00 AM - 12:00 PM',
-    eveningDarshanTime: '05:00 PM - 08:00 PM'
   };
 
   isAdmin = false;
@@ -61,11 +52,11 @@ export class ContactPageComponent implements OnInit {
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
     this.loadVisitInfo();
-    this.loadHomeNotice();
   }
 
   get visitingHoursPlaceholder(): string {
-    return `രാവിലെ: ${this.homeNotice.morningDarshanTime}\nവൈകുന്നേരം: ${this.homeNotice.eveningDarshanTime}`;
+    return 'രാവിലെ: 06:00 AM - 09:00 PM\
+വൈകുന്നേരം: 05:30 PM - 08:00 PM';
   }
 
   loadVisitInfo(): void {
@@ -83,20 +74,6 @@ export class ContactPageComponent implements OnInit {
     });
   }
 
-  loadHomeNotice(): void {
-    this.contentService.getHomeNotice().subscribe({
-      next: (notice: HomeNotice) => {
-        this.homeNotice = notice;
-        this.officeHours = [
-          `രാവിലെ: ${notice.morningDarshanTime}`,
-          `വൈകുന്നേരം: ${notice.eveningDarshanTime}`
-        ];
-      },
-      error: (err) => {
-        console.error('Error loading home notice for timings:', err);
-      }
-    });
-  }
 
   updateContactItems(): void {
     this.contactItems = [

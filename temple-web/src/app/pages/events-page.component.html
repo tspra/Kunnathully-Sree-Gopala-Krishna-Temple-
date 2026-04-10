@@ -24,6 +24,7 @@
       <h2>വരാനിരിക്കുന്ന ക്ഷേത്ര പരിപാടികൾ</h2>
       <div class="content-grid-list">
         <article class="content-item-card" *ngFor="let event of events">
+          <img class="event-photo" [src]="event.imageUrl || defaultEventImageUrl" alt="Event photo" onerror="this.src='assets/images/Image1.PNG'" />
           <p class="meta">{{ event.date }}</p>
           <h3>{{ event.title }}</h3>
           <p>{{ event.description }}</p>
@@ -75,6 +76,17 @@
             maxlength="500"
             placeholder="ഇവന്റിനെ കുറിച്ച് ചെറിയ വിവരണം നൽകുക"></textarea>
         </label>
+
+        <label class="form-field">
+          <span>ഇവന്റ് ചിത്രം (ഓപ്ഷണൽ)</span>
+          <input
+            type="file"
+            accept="image/*"
+            name="eventImage"
+            (change)="onEventImageSelected($event)" />
+        </label>
+
+        <img class="event-photo-preview" [src]="eventImagePreviewUrl" alt="Event preview" />
 
         <button class="event-submit" type="submit" [disabled]="eventForm.invalid || isSubmitting">
           {{ isSubmitting ? 'സമർപ്പിക്കുന്നു...' : 'ഇവന്റ് ചേർക്കുക' }}

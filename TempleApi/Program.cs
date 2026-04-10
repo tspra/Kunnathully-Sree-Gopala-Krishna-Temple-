@@ -90,7 +90,29 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<TempleContentDbContext>();
     dbContext.Database.EnsureCreated();
+    EnsureCompatibilityColumns(dbContext);
     TempleDataSeeder.Seed(dbContext);
+}
+
+static void EnsureCompatibilityColumns(TempleContentDbContext dbContext)
+{
+    if (dbContext.Database.IsNpgsql())
+    {
+        dbContext.Database.ExecuteSqlRaw("ALTER TABLE \"Events\" ADD COLUMN IF NOT EXISTS \"ImageUrl\" text NOT NULL DEFAULT '';");
+        return;
+    }
+
+    if (dbContext.Database.IsSqlite())
+    {
+        try
+        {
+            dbContext.Database.ExecuteSqlRaw("ALTER TABLE \"Events\" ADD COLUMN \"ImageUrl\" TEXT NOT NULL DEFAULT '';");
+        }
+        catch
+        {
+            // Column already exists in existing SQLite database.
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.

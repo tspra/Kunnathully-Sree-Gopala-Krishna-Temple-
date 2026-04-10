@@ -10,6 +10,7 @@ import { TempleContentService } from '../temple-content.service';
 })
 export class EventsPageComponent implements OnInit {
   events: TempleEvent[] = [];
+  readonly defaultEventImageUrl = 'assets/images/Image1.PNG';
   readonly currentEventsTab = 'current';
   readonly addEventTab = 'add';
   selectedTab = this.currentEventsTab;
@@ -17,11 +18,14 @@ export class EventsPageComponent implements OnInit {
   deletingEventId: number | null = null;
   successMessage = '';
   errorMessage = '';
+  selectedEventImageFile: File | null = null;
+  eventImagePreviewUrl = this.defaultEventImageUrl;
 
   formData: CreateEventRequest = {
     title: '',
     date: '',
-    description: ''
+    description: '',
+    imageUrl: this.defaultEventImageUrl
   };
 
   constructor(
@@ -56,27 +60,66 @@ export class EventsPageComponent implements OnInit {
   }
 
   submit(): void {
+    if (!this.formData.title || !this.formData.date) {
+      this.errorMessage = 'ഇവന്റിന്റെ പേരും തീയതിയും നിർബന്ധമാണ്.';
+      return;
+    }
+
     this.successMessage = '';
     this.errorMessage = '';
     this.isSubmitting = true;
 
-    this.contentService.createEvent(this.formData).subscribe({
-      next: () => {
-        this.successMessage = 'ഇവന്റ് വിജയകരമായി ചേർത്തു.';
-        this.formData = {
-          title: '',
-          date: '',
-          description: ''
-        };
-        this.isSubmitting = false;
-        this.selectedTab = this.currentEventsTab;
-        this.loadEvents();
-      },
-      error: (error) => {
-        this.errorMessage = error?.error?.message ?? 'ഇവന്റ് ചേർക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക.';
-        this.isSubmitting = false;
-      }
-    });
+    const createEvent = (imageUrl: string) => {
+      this.contentService.createEvent({
+        ...this.formData,
+        imageUrl
+      }).subscribe({
+        next: () => {
+          this.successMessage = 'ഇവന്റ് വിജയകരമായി ചേർത്തു.';
+          this.formData = {
+            title: '',
+            date: '',
+            description: '',
+            imageUrl: this.defaultEventImageUrl
+          };
+          this.selectedEventImageFile = null;
+          this.eventImagePreviewUrl = this.defaultEventImageUrl;
+          this.isSubmitting = false;
+          this.selectedTab = this.currentEventsTab;
+          this.loadEvents();
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.message ?? 'ഇവന്റ് ചേർക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക.';
+          this.isSubmitting = false;
+        }
+      });
+    };
+
+    if (this.selectedEventImageFile) {
+      this.contentService.uploadEventImage(this.selectedEventImageFile).subscribe({
+        next: (uploadResult) => createEvent(uploadResult.imageUrl),
+        error: (error) => {
+          this.errorMessage = error?.error?.message ?? 'ചിത്രം അപ്‌ലോഡ് ചെയ്യാനായില്ല. വീണ്ടും ശ്രമിക്കുക.';
+          this.isSubmitting = false;
+        }
+      });
+      return;
+    }
+
+    createEvent(this.formData.imageUrl || this.defaultEventImageUrl);
+  }
+
+  onEventImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    this.selectedEventImageFile = files && files.length > 0 ? files[0] : null;
+
+    if (!this.selectedEventImageFile) {
+      this.eventImagePreviewUrl = this.defaultEventImageUrl;
+      return;
+    }
+
+    this.eventImagePreviewUrl = URL.createObjectURL(this.selectedEventImageFile);
   }
 
   isPastEvent(event: TempleEvent): boolean {
